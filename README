@@ -5,7 +5,7 @@ MBF
 `mbf` stands for "macro brainfuck".
 
 [USAGE -- HELLO WORLD]
--------
+----------------------
    ###################
    # hello_world.mbf #
    ###################
