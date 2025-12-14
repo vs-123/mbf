@@ -1,19 +1,19 @@
 OPTS=-Wall -Wextra -Wpedantic -std=c99
 SRC=$(wildcard src/*.c)
-BUILD=build/
+BUILD=build
 PROGRAM=mbf
 BUILD_PROGRAM=$(BUILD)/$(PROGRAM)
 
 build: $(SRC)
 	@ echo "[INFO] building..."
-	@ mkdir -p $(BUILD_PROGRAM)
+	@ mkdir -p $(BUILD)
 	@ $(CC) -o $(BUILD_PROGRAM) $(OPTS) $(SRC)
 
 run: build
 	@ echo "[INFO] running..."
 	@ exec $(BUILD_PROGRAM)
 
-clean: $(BUILD)
+clean:
 	@ echo "[INFO] cleaning..."
 	@ rm -rf $(BUILD)
 
