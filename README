@@ -1,0 +1,50 @@
+MBF
+===
+   mbf is a modified implementation of the esoteric programming language Brainfuck (https://en.wikipedia.org/wiki/Brainfuck), with the addition of macros along with it.
+
+`mbf` stands for "macro brainfuck".
+
+[USAGE -- HELLO WORLD]
+-------
+   ###################
+   # hello_world.mbf #
+   ###################
+
+   ; hello macro
+   hello {
+      > 8+ [< 9+ > -] < .
+      > 4+ [< 7+ > -] > +.
+      7+ . .
+      3+ .
+      >> 6+ [< 7+ >-] < ++.
+      12- .
+      > 6+ [< 9+ >-] < + .
+      <.
+      3+ .
+      6- .
+      8- .
+      >>> 4+ [< 8+ >-] <+ .
+   }
+
+   ; call hello
+   hello
+
+   #########
+   # SHELL #
+   #########
+   
+   % # use mbf -h for help
+   
+   % mbf ./hello_world.mbf
+   Hello, World!
+   
+   % mbf -E ./hello_world.mbf
+   >++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.
+
+[EXAMPLES]
+   You may find more examples in `example/` directory.
+
+[LICENSE]
+---------
+   This program is licensed under AGPLv3 or later.
+   For more information, see `LICENSE` file.
