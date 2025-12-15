@@ -1,4 +1,4 @@
-OPTS=-Wall -Wextra -Wpedantic -std=c99
+OPTS=-Wall -Wextra -Wpedantic -std=c11
 SRC=$(wildcard src/*.c)
 BUILD=build
 PROGRAM=mbf

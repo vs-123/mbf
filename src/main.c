@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "mbf.h"
 
@@ -28,7 +29,9 @@ main (void)
                          "; call hello\n"
                          "hello\n";
 
-   const char *mbf_expanded = mbf_expand_macros (program);
+   const char *mbf_expanded = mbf_preprocess (program);
    printf ("%s\n", mbf_expanded);
+
+   free((void*)mbf_expanded);
    // mbf_exec_bf (mbf_expanded);
 }
