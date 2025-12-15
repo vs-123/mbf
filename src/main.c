@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #include "mbf.h"
+#include "tokeniser_t.h"
+#include "vector.h"
 
 int
 main (void)
@@ -28,6 +30,12 @@ main (void)
                          "\n"
                          "; call hello\n"
                          "hello\n";
+
+//   vector_t v = new_vector (32, sizeof (token_t));
+//   token_t *t1 = malloc(sizeof(token_t));
+//   vector_push_elem(&v, (void*));
+//
+//   return 0;
 
    const char *mbf_expanded = mbf_preprocess (program);
    printf ("%s\n", mbf_expanded);
