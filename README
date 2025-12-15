@@ -10,7 +10,7 @@ MBF
    # hello_world.mbf #
    ###################
 
-   ; hello macro
+   # hello macro
    hello {
       > 8+ [< 9+ > -] < .
       > 4+ [< 7+ > -] > +.
