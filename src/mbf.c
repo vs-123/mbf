@@ -80,6 +80,8 @@ mbf_expand_number_prefixes (vector_t *tokens)
             }
          i++;
       }
+
+   memmove(tokens, &expanded_tokens, expanded_tokens.size * expanded_tokens.elem_size);
 }
 
 const char *
@@ -94,9 +96,9 @@ mbf_preprocess (const char *program)
 
    mbf_tokenise (&tokeniser);
 
-   //print_tokens(tokeniser.tokens);
-
    mbf_expand_number_prefixes (&tokeniser.tokens);
+
+   print_tokens(tokeniser.tokens);
 
    assert (0 && "expanded trivial ones, now what?");
 
