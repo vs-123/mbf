@@ -1,41 +1,86 @@
 #include "mbf.h"
 
 #include <assert.h>
+#include <ctype.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
-#include "vector.h"
+#include "tokeniser_t.h"
+
 #include "str.h"
+#include "vector.h"
 
-typedef enum
+// tbh compilers yelling errors
+// feels like it's crying
+// and yup this throws an error
+void
+cry (const tokeniser_t *tokeniser, const char *format, ...)
 {
-   Token_Ident,
-   Token_Number,
+   const unsigned int idx = tokeniser->prog_idx;
+   const char *prog       = tokeniser->program;
+   unsigned int line      = 1;
+   unsigned int col       = 1;
 
-   Token_Left,
-   Token_Right,
-   Token_Dot,
-} token_type_t;
+   char c = '\1';
 
-typedef struct
+   for (unsigned int i = 0; i < idx; i++)
+      {
+         c = prog[i];
+         if (c == '\n')
+            {
+               line++;
+               col = 0;
+            }
+         col++;
+      }
+
+   fprintf (stderr, "[ERROR %u:%u] ", line, col);
+
+   va_list args;
+
+   va_start (args, format);
+   vfprintf (stderr, format, args);
+   va_end (args);
+
+   fprintf (stderr, "\n");
+
+   exit (1);
+}
+
+void
+tokenise_ident (tokeniser_t *tokeniser)
 {
-   token_type_t type;
-   union
-   {
-      int n_val;
-      const char *c_val;
-   };
-} token_t;
+   // we're at an isalpha character right now
+   // eat up isalnum characters until we hit a non-isalnum char
+   // and then push it as a token to tokeniser->tokens
 
-const token_t *
-mbf_tokenise (const char *program, unsigned int prog_idx)
+   // starting with 32 capacity
+   string_t eaten_alnum = new_string (32);
+   char curr_char       = '\1';
+
+   while ((isalnum ((curr_char = tokeniser->program[tokeniser->prog_idx++]))
+           || curr_char == '_')
+          && curr_char != ';' && curr_char != '\0')
+      {
+         string_push (&eaten_alnum, curr_char);
+      }
+
+   token_t *token = malloc (sizeof (token_t));
+   token->type    = Token_Ident;
+   token->c_val   = eaten_alnum.elems;
+
+   vector_push_elem (&tokeniser->tokens, (void *)token);
+}
+
+void
+mbf_tokenise (tokeniser_t *tokeniser)
 {
+   tokeniser->tokens = new_vector (32, sizeof (vector_t));
    char current_char = '\1';
-   vector_t tokens = new_vector(32, sizeof(tokens));
 
-   while ((current_char = program[prog_idx++]) != '\0')
+   while ((current_char = tokeniser->program[tokeniser->prog_idx]) != '\0')
       {
          switch (current_char)
             {
@@ -44,7 +89,7 @@ mbf_tokenise (const char *program, unsigned int prog_idx)
             case ';':
                while (current_char != '\n' && current_char != '\0')
                   {
-                     current_char = program[prog_idx++];
+                     current_char = tokeniser->program[++tokeniser->prog_idx];
                   }
                break;
 
@@ -56,12 +101,16 @@ mbf_tokenise (const char *program, unsigned int prog_idx)
                break;
 
             default:
-               if (isascii (current_char))
+               if (isalpha (current_char))
                   {
-		     assert(0 && "identifiers not implemented");
+		     //		     cry(tokeniser, "curr char : %c", current_char);
+                     tokenise_ident (tokeniser);
+                     const token_t *ident = vector_at (&tokeniser->tokens, 0);
+                     cry (tokeniser, "found ident: %s", ident->c_val);
                   }
-               printf ("found weird char `%c`\n", current_char);
+               cry (tokeniser, "found weird char `%c`\n", current_char);
             }
+         tokeniser->prog_idx++;
       }
 }
 
@@ -71,10 +120,15 @@ const char *
 mbf_preprocess (const char *program)
 {
    char *expanded_bf = malloc (sizeof (char) * 256);
-   const token_t *tokens = mbf_tokenise (program, 0);
 
+   tokeniser_t tokeniser = {
+      .program = program, .prog_idx = 0,
+      // .tokens not initialised -- inited by =mbf_tokenise=
+   };
 
-   assert(0 && "not implemented.");
+   mbf_tokenise (&tokeniser);
+
+   assert (0 && "tokenised, now what?");
 
    return expanded_bf;
 }

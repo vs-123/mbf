@@ -3,7 +3,7 @@
 
 typedef struct
 {
-   void *elems;
+   char *elems;
    unsigned int size;
    unsigned int capacity;
 } string_t;
