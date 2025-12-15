@@ -94,7 +94,7 @@ mbf_preprocess (const char *program)
 
    mbf_tokenise (&tokeniser);
 
-   print_tokens(tokeniser.tokens);
+   //print_tokens(tokeniser.tokens);
 
    mbf_expand_number_prefixes (&tokeniser.tokens);
 
