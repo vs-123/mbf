@@ -12,7 +12,7 @@ main (void)
                          "# hello_world.mbf #\n"
                          "###################\n"
                          "\n"
-                         "; hello macro\n"
+                         "# hello macro\n"
                          "hello {\n"
                          "> 8+ [< 9+ > -] < .\n"
                          "> 4+ [< 7+ > -] > +.\n"
