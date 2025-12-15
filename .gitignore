@@ -1,0 +1,10 @@
+!examples/
+!examples/**
+!src/
+!src/**
+
+!.clang-format
+!.gitkeep
+!LICENSE
+!Makefile
+!README
