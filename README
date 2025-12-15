@@ -26,8 +26,8 @@ MBF
       >>> 4+ [< 8+ >-] <+ .
    }
 
-   ; call hello
-   hello
+   # call hello
+   hello;
 
    #########
    # SHELL #

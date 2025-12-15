@@ -28,8 +28,8 @@ main (void)
                          ">>> 4+ [< 8+ >-] <+ .\n"
                          "}\n"
                          "\n"
-                         "; call hello\n"
-                         "hello\n";
+                         "# call hello\n"
+                         "hello;\n";
 
 //   vector_t v = new_vector (32, sizeof (token_t));
 //   token_t *t1 = malloc(sizeof(token_t));
