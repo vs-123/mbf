@@ -88,13 +88,11 @@ tokenise_num (tokeniser_t *tokeniser)
       {
          eaten_num *= 10;
          eaten_num += (curr_char - '0');
-
       }
 
    token_t *token = malloc (sizeof (token_t));
    token->type    = Token_Number;
    token->n_val   = eaten_num;
-
 
    vector_push_elem (&tokeniser->tokens, (void *)token);
 }
@@ -105,8 +103,11 @@ mbf_tokenise (tokeniser_t *tokeniser)
    tokeniser->tokens = new_vector (32, sizeof (token_t));
    char current_char = '\1';
 
-   while ((current_char = tokeniser->program[tokeniser->prog_idx]) != '\0')
+   unsigned int prog_size = strlen(tokeniser->program);
+
+   while (tokeniser->prog_idx < prog_size)
       {
+	 current_char = tokeniser->program[tokeniser->prog_idx];
          switch (current_char)
             {
             // comments
@@ -173,7 +174,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
                }
                break;
 
-	    case '[':
+            case '[':
                {
                   token_t *token = malloc (sizeof (token_t));
                   token->type    = Token_LLoop;
@@ -189,26 +190,41 @@ mbf_tokenise (tokeniser_t *tokeniser)
                }
                break;
 
+            case '.':
+               {
+                  token_t *token = malloc (sizeof (token_t));
+                  token->type    = Token_Dot;
+                  vector_push_elem (&tokeniser->tokens, (void *)token);
+               }
+               break;
+
+            case '\0':
+               {
+                  token_t *token = malloc (sizeof (token_t));
+                  token->type    = Token_EOF;
+                  vector_push_elem (&tokeniser->tokens, (void *)token);
+               }
+               break;
+
             default:
                if (isalpha (current_char))
                   {
-                     //cry(tokeniser, "before curr char : %c", current_char);
+                     // cry(tokeniser, "before curr char : %c", current_char);
 
                      tokenise_ident (tokeniser);
-		     tokeniser->prog_idx++;
-		     continue;
-		     current_char = tokeniser->program[tokeniser->prog_idx];
-		     //cry(tokeniser, "after curr char : %c", current_char);
-                     //const token_t *ident = vector_at (&tokeniser->tokens, 0);
-                     //cry (tokeniser, "found ident: %s", ident->c_val);
+                     // cry(tokeniser, "after curr char : %c", current_char);
+                     // const token_t *ident = vector_at (&tokeniser->tokens,
+                     // 0); cry (tokeniser, "found ident: %s", ident->c_val);
                   }
                else if (isdigit (current_char))
                   {
                      tokenise_num (tokeniser);
-                     const token_t *num = vector_at (&tokeniser->tokens, 2); 
-                     cry (tokeniser, "found number: %d", num->n_val);
                   }
-               cry (tokeniser, "found weird char `%c`\n", current_char);
+               else
+                  {
+                     cry (tokeniser, "found weird char `%c` (code: %d)\n",
+                          current_char, (int)current_char);
+                  }
             }
          tokeniser->prog_idx++;
       }
