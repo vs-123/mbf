@@ -158,6 +158,69 @@ tok_to_str (token_type_t tok_type)
       }
 }
 
+string_t
+tokens_to_bf_str (vector_t tokens)
+{
+   token_t *curr_tok = malloc (sizeof (token_t));
+   string_t bf       = new_string (64);
+   for (unsigned int i = 0; i < tokens.size; i++)
+      {
+         curr_tok  = vector_at (&tokens, i);
+         char bf_c = ' ';
+         switch (curr_tok->type)
+            {
+               // Classic BF
+            case Token_Plus:
+               {
+                  bf_c = '+';
+               }
+               break;
+            case Token_Minus:
+               {
+                  bf_c = '-';
+               }
+               break;
+
+            case Token_Left:
+               {
+                  bf_c = '<';
+               }
+               break;
+            case Token_Right:
+               {
+                  bf_c = '>';
+               }
+               break;
+
+            case Token_LLoop:
+               {
+                  bf_c = '[';
+               }
+               break;
+            case Token_RLoop:
+               {
+                  bf_c = ']';
+               }
+               break;
+
+            case Token_Dot:
+               {
+                  bf_c = '.';
+               }
+               break;
+
+            default:
+               // anything here will be an invalid token
+               printf ("[WARNING] unexpected token %s, skipping...\n",
+                       tok_to_str (curr_tok->type));
+               continue;
+            }
+         string_push (&bf, bf_c);
+      }
+
+   return bf;
+}
+
 void
 print_tokens (vector_t tokens)
 {
@@ -166,7 +229,7 @@ print_tokens (vector_t tokens)
    for (unsigned int i = 0; i < tokens.size; i++)
       {
          token_t *curr_tok = (token_t *)vector_at (&tokens, i);
-	 token_type_t tt_t = curr_tok->type;
+         token_type_t tt_t = curr_tok->type;
          const char *tt    = tok_to_str (tt_t);
 
          printf ("i: %d; ", i);
@@ -174,14 +237,14 @@ print_tokens (vector_t tokens)
 
          if (tt_t == Token_Number)
             {
-	       printf("n_val: %d;", curr_tok->n_val);
+               printf ("n_val: %d;", curr_tok->n_val);
             }
          else if (tt_t == Token_Ident)
             {
                printf ("c_val: %s;", curr_tok->c_val);
             }
 
-	 printf("\n");
+         printf ("\n");
       }
 }
 
@@ -325,7 +388,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
                else if (isdigit (current_char))
                   {
                      tokenise_num (tokeniser);
-		     continue;
+                     continue;
                   }
                else
                   {

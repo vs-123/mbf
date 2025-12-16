@@ -15,7 +15,7 @@ main (void)
                          "# hello macro\n"
                          "hello {\n"
                          "> 8+ [< 9+ > -] < .\n"
-                         "> 4+ [< 7+ > -] > +.\n"
+                         "> 4+ [< 7+ > -] < +.\n"
                          "7+ . .\n"
                          "3+ .\n"
                          ">> 6+ [< 7+ >-] < ++.\n"
@@ -40,6 +40,6 @@ main (void)
    const char *mbf_expanded = mbf_preprocess (program);
    printf ("%s\n", mbf_expanded);
 
-   free ((void *)mbf_expanded);
+   //   free ((void *)mbf_expanded);
    // mbf_exec_bf (mbf_expanded);
 }

@@ -79,7 +79,6 @@ macromiser_collect_macros (macromiser_t *m)
                      const char *macro_name = curr_tok->c_val;
                      vector_t macro_body = new_vector (16, sizeof (token_t));
                      idx++;
-                     idx++;
                      curr_tok = (token_t *)vector_at (&m->tokens, idx);
                      while (curr_tok->type != Token_RCurly
                             && curr_tok->type != Token_EOF)
@@ -121,10 +120,10 @@ macromiser_expand_macros (macromiser_t *m)
                break;
             }
 
-         token_t *next_tok  = (token_t *)vector_at (&m->tokens, idx + 1);
+         token_t *next_tok = (token_t *)vector_at (&m->tokens, idx + 1);
 
          if (curr_tok->type == Token_Ident)
-            {       
+            {
                if (next_tok->type == Token_Semicolon)
                   {
                      bool is_valid_macro          = false;

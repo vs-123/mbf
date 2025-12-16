@@ -1,6 +1,7 @@
 #ifndef TOKENISER_T_H
 #define TOKENISER_T_H
 
+#include "str.h"
 #include "vector.h"
 
 typedef struct
@@ -55,7 +56,9 @@ typedef struct
 } tokeniser_t;
 
 char *tok_to_str (token_type_t tok);
-void print_tokens(vector_t tokens);
+void print_tokens (vector_t tokens);
+string_t tokens_to_bf_str (vector_t tokens);
+
 void mbf_tokenise (tokeniser_t *tokeniser);
 
 #endif // TOKENISER_T_H
