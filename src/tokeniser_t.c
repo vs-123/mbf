@@ -193,7 +193,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
 
    unsigned int prog_size = strlen (tokeniser->program);
 
-   while (tokeniser->prog_idx < prog_size)
+   while (current_char != '\0')
       {
          current_char = tokeniser->program[tokeniser->prog_idx];
          switch (current_char)

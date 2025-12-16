@@ -98,10 +98,72 @@ macromiser_collect_macros (macromiser_t *m)
                      vector_push_elem (&m->macros, (void *)macro);
                   }
             }
-         if (!is_macro_defn)
+         // at this point, curr_tok is either Token_RCurly or something else.
+         vector_push_elem (&new_tokens, curr_tok);
+         idx++;
+      }
+
+   m->tokens = new_tokens;
+}
+
+void
+macromiser_expand_macros (macromiser_t *m)
+{
+   vector_t new_tokens    = new_vector (32, sizeof (token_t));
+   unsigned int idx       = 0;
+   unsigned int prog_size = m->tokens.size;
+
+   while (idx < prog_size)
+      {
+         token_t *curr_tok = (token_t *)vector_at (&m->tokens, idx);
+         if (curr_tok->type == Token_EOF)
             {
-               vector_push_elem (&new_tokens, curr_tok);
+               break;
             }
+
+         token_t *next_tok  = (token_t *)vector_at (&m->tokens, idx + 1);
+
+         if (curr_tok->type == Token_Ident)
+            {       
+               if (next_tok->type == Token_Semicolon)
+                  {
+                     bool is_valid_macro          = false;
+                     const char *macro_name       = curr_tok->c_val;
+                     unsigned int macro_name_hash = str_hash (macro_name);
+
+                     // search the macro
+                     for (unsigned int i = 0; i < m->macros.size; i++)
+                        {
+                           macro_t *curr_macro = malloc (sizeof (macro_t));
+                           curr_macro = (macro_t *)vector_at (&m->macros, i);
+
+                           // append macro body if match
+                           if (curr_macro->hash == macro_name_hash)
+                              {
+                                 is_valid_macro = true;
+
+                                 for (unsigned int j = 0;
+                                      j < curr_macro->body.size; j++)
+                                    {
+                                       token_t *curr_body_token
+                                           = malloc (sizeof (token_t));
+                                       curr_body_token
+                                           = vector_at (&curr_macro->body, j);
+                                       vector_push_elem (&new_tokens,
+                                                         curr_body_token);
+                                    }
+                              }
+                        }
+
+                     if (!is_valid_macro)
+                        {
+                           cry (curr_tok, "bad macro '%s' was called",
+                                macro_name);
+                        }
+                  }
+            }
+         // at this point everything would've been expanded
+         vector_push_elem (&new_tokens, curr_tok);
          idx++;
       }
 

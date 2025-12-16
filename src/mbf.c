@@ -98,9 +98,10 @@ mbf_preprocess (const char *program)
 
    mbf_tokenise (&tokeniser);
 
+   //   print_tokens(tokeniser.tokens);
    mbf_expand_number_prefixes (&tokeniser.tokens);
 
-   // print_tokens(tokeniser.tokens);
+   
 
    // for actual macros, we will use a two-phase approach -- first collect,
    // then expand
@@ -112,9 +113,8 @@ mbf_preprocess (const char *program)
 
    macromiser_collect_macros (&macromiser);
 
-   printf ("collected %d macros\n", macromiser.macros.size);
-   assert (0 && "collected macros, now what?");
-   // macromiser_expand_macros (&macromiser);
+   macromiser_expand_macros (&macromiser);
+   assert (0 && "expanded macros, now what?");
 
    return expanded_bf;
 }
