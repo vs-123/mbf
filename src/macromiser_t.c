@@ -155,6 +155,7 @@ macromiser_expand_macros (macromiser_t *m)
             }
 
          token_t next_tok = *(token_t *)vector_at (&m->tokens, idx + 1);
+	 bool has_expanded = false;
 
          if (curr_tok.type == Token_Ident)
             {
@@ -170,7 +171,7 @@ macromiser_expand_macros (macromiser_t *m)
                            macro_t curr_macro
                                = *(macro_t *)vector_at (&m->macros, i);
 
-                           // append macro body if match
+                           // append macro body if macro exists
                            if (curr_macro.hash == macro_name_hash)
                               {
                                  is_valid_macro = true;
@@ -184,6 +185,8 @@ macromiser_expand_macros (macromiser_t *m)
                                        vector_push_elem (&new_tokens,
                                                          &curr_body_token);
                                     }
+				 
+				 has_expanded = true;
                               }
                         }
 
@@ -192,10 +195,14 @@ macromiser_expand_macros (macromiser_t *m)
                            cry (&curr_tok, "bad macro '%s' was called",
                                 macro_name);
                         }
+
+		     idx += 2;
                   }
             }
          // at this point everything would've been expanded
-         vector_push_elem (&new_tokens, &curr_tok);
+	 if (!has_expanded) {
+	    vector_push_elem (&new_tokens, &curr_tok);
+	 }
          idx++;
       }
 

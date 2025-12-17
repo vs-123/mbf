@@ -220,7 +220,8 @@ tokens_to_bf_str (vector_t tokens)
 
             default:
                // anything here will be an invalid token
-               printf ("[WARNING] unexpected token %s, skipping...\n",
+               printf ("[WARNING %u:%u] unexpected token %s, skipping...\n",
+                       curr_tok.lc.line, curr_tok.lc.col,
                        tok_to_str (curr_tok.type));
                continue;
             }
@@ -407,7 +408,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
                      // cry(tokeniser, "before curr char : %c", current_char);
 
                      tokenise_ident (tokeniser);
-		     continue;
+                     continue;
                      // cry(tokeniser, "after curr char : %c", current_char);
                      // const token_t *ident = vector_at (&tokeniser->tokens,
                      // 0); cry (tokeniser, "found ident: %s", ident->c_val);
