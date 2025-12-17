@@ -78,11 +78,18 @@ tokenise_ident (tokeniser_t *tokeniser)
 
    tokeniser->prog_idx--;
 
+   size_t len = eaten_alnum.size; // number of chars pushed
+   char *name = malloc (len + 1);
+   memcpy (name, eaten_alnum.elems, len);
+   name[len] = '\0';
+
    token_t token = {
       .type  = Token_Ident,
-      .c_val = eaten_alnum.elems,
+      .c_val = name,
       .lc    = lc,
    };
+
+   string_free (&eaten_alnum);
 
    vector_push_elem (&tokeniser->tokens, &token);
 }
@@ -163,13 +170,13 @@ tok_to_str (token_type_t tok_type)
 string_t
 tokens_to_bf_str (vector_t tokens)
 {
-   token_t *curr_tok = malloc (sizeof (token_t));
-   string_t bf       = new_string (64);
+   token_t curr_tok = { 0 };
+   string_t bf      = new_string (64);
    for (unsigned int i = 0; i < tokens.size; i++)
       {
-         curr_tok  = vector_at (&tokens, i);
+         curr_tok  = *(token_t *)vector_at (&tokens, i);
          char bf_c = ' ';
-         switch (curr_tok->type)
+         switch (curr_tok.type)
             {
                // Classic BF
             case Token_Plus:
@@ -214,7 +221,7 @@ tokens_to_bf_str (vector_t tokens)
             default:
                // anything here will be an invalid token
                printf ("[WARNING] unexpected token %s, skipping...\n",
-                       tok_to_str (curr_tok->type));
+                       tok_to_str (curr_tok.type));
                continue;
             }
          string_push (&bf, bf_c);

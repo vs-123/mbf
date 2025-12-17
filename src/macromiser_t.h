@@ -28,4 +28,6 @@ void macromiser_collect_macros (macromiser_t *);
 // expands macros into =tokens=
 void macromiser_expand_macros (macromiser_t *);
 
+void macromiser_free(macromiser_t*);
+
 #endif // MACROMISER_T_H

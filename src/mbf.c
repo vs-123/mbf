@@ -54,8 +54,7 @@ mbf_expand_number_prefixes (vector_t *tokens)
                unsigned int times = curr_tok.n_val;
 
                token_t next_tok = *(token_t *)vector_at (tokens, i + 1);
-               if (next_tok.type != Token_Plus
-                   && next_tok.type != Token_Minus)
+               if (next_tok.type != Token_Plus && next_tok.type != Token_Minus)
                   {
                      printf ("times %d\n", times);
                      cry (&next_tok, "expected either + or -, got a %s",
@@ -81,13 +80,13 @@ mbf_expand_number_prefixes (vector_t *tokens)
 
    vector_t old = *tokens;
    *tokens      = expanded_tokens;
-   vector_free(&old);
+   vector_free (&old);
 }
 
 string_t
 mbf_preprocess (const char *program)
 {
-   string_t expanded_bf  = new_string (256);
+   //   string_t expanded_bf  = new_string (256);
    tokeniser_t tokeniser = {
       .program = program, .prog_idx = 0,
       // .tokens not initialised -- inited by =mbf_tokenise=
@@ -98,23 +97,23 @@ mbf_preprocess (const char *program)
    //   print_tokens(tokeniser.tokens);
    mbf_expand_number_prefixes (&tokeniser.tokens);
 
-   tokeniser_free (&tokeniser);
-
    // for actual macros, we will use a two-phase approach -- first collect,
    // then expand
 
    // what's the noun for something that collects macros?
    //   i'll go with `macromiser`, sounds good enough
 
-   // macromiser_t macromiser = new_macromiser (tokeniser.tokens);
+   macromiser_t macromiser = new_macromiser (tokeniser.tokens);
 
-   //   macromiser_collect_macros (&macromiser);
+   macromiser_collect_macros (&macromiser);
 
-   //   macromiser_expand_macros (&macromiser);
+   macromiser_expand_macros (&macromiser);
 
-   //   string_t bf_str = tokens_to_bf_str (macromiser.tokens);
+   string_t bf_str = tokens_to_bf_str (macromiser.tokens);
 
-   return expanded_bf;
+   macromiser_free (&macromiser);
+
+   return bf_str;
 
    //   return expanded_bf;
 }

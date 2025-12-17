@@ -29,6 +29,29 @@ cry (const token_t *token, const char *format, ...)
    exit (1);
 }
 
+static void
+free_token_heap_fields_vector (vector_t *v)
+{
+   for (unsigned int i = 0; i < v->size; i++)
+      {
+         token_t *t = (token_t *)vector_at (v, i);
+         if (t->type == Token_Ident && t->c_val)
+            {
+               free ((void*)t->c_val);
+               t->c_val = NULL;
+            }
+      }
+}
+
+static void
+replace_tokens (vector_t *dst, vector_t *src)
+{
+   vector_t old = *dst;
+   *dst         = *src;
+   // src is moved; don't free src
+   vector_free (&old);
+}
+
 // impl
 
 macro_t
@@ -61,46 +84,59 @@ macromiser_collect_macros (macromiser_t *m)
 
    while (idx < prog_size)
       {
-         token_t *curr_tok = (token_t *)vector_at (&m->tokens, idx);
-         if (curr_tok->type == Token_EOF)
+         token_t curr_tok = *(token_t *)vector_at (&m->tokens, idx);
+         if (curr_tok.type == Token_EOF)
             {
                break;
             }
 
-         token_t *next_tok  = (token_t *)vector_at (&m->tokens, idx + 1);
+         token_t next_tok = *(token_t *)vector_at (&m->tokens, idx + 1);
 
-         if (curr_tok->type == Token_Ident)
+         if (curr_tok.type == Token_Ident)
             {
 
-               if (next_tok->type == Token_LCurly)
+               if (next_tok.type == Token_LCurly)
                   {
-                     const char *macro_name = curr_tok->c_val;
+		     token_t *orig_ident = (token_t*)vector_at(&m->tokens, idx);
+                     const char *macro_name = curr_tok.c_val;
                      vector_t macro_body = new_vector (16, sizeof (token_t));
-                     idx++;
-                     curr_tok = (token_t *)vector_at (&m->tokens, idx);
-                     while (curr_tok->type != Token_RCurly
-                            && curr_tok->type != Token_EOF)
+                     idx += 2;
+                     while (idx < prog_size)
                         {
+                           token_t t = *(token_t *)vector_at (&m->tokens, idx);
+                           if (t.type == Token_RCurly)
+                              {
+                                 idx++;
+                                 break;
+                              }
+                           if (t.type == Token_EOF)
+                              {
+                                 cry (&t, "expected '}', found EOF.");
+                              }
+                           vector_push_elem (&macro_body, &t);
                            idx++;
-                           curr_tok = (token_t *)vector_at (&m->tokens, idx);
-                           vector_push_elem (&macro_body, (void *)curr_tok);
                         }
-                     if (curr_tok->type == Token_EOF)
+                     if (curr_tok.type == Token_EOF)
                         {
-                           cry (curr_tok, "expected ending curly brace }, "
-                                          "found end of file instead.");
+                           cry (&curr_tok, "expected ending curly brace }, "
+                                           "found end of file instead.");
                         }
-                     macro_t *macro = malloc (sizeof (macro_t));
-                     *macro         = new_macro (macro_name, macro_body);
-                     vector_push_elem (&m->macros, (void *)macro);
+                     macro_t macro = new_macro (macro_name, macro_body);
+                     vector_push_elem (&m->macros, &macro);
+                     if (orig_ident->c_val)
+                        {
+			   free((void *)orig_ident->c_val); orig_ident->c_val = NULL; 
+                        }
+                     continue;
                   }
             }
          // at this point, curr_tok is either Token_RCurly or something else.
-         vector_push_elem (&new_tokens, curr_tok);
+         vector_push_elem (&new_tokens, &curr_tok);
          idx++;
       }
 
-   m->tokens = new_tokens;
+   //   m->tokens = new_tokens;
+   replace_tokens (&m->tokens, &new_tokens);
 }
 
 void
@@ -112,57 +148,75 @@ macromiser_expand_macros (macromiser_t *m)
 
    while (idx < prog_size)
       {
-         token_t *curr_tok = (token_t *)vector_at (&m->tokens, idx);
-         if (curr_tok->type == Token_EOF)
+         token_t curr_tok = *(token_t *)vector_at (&m->tokens, idx);
+         if (curr_tok.type == Token_EOF)
             {
                break;
             }
 
-         token_t *next_tok = (token_t *)vector_at (&m->tokens, idx + 1);
+         token_t next_tok = *(token_t *)vector_at (&m->tokens, idx + 1);
 
-         if (curr_tok->type == Token_Ident)
+         if (curr_tok.type == Token_Ident)
             {
-               if (next_tok->type == Token_Semicolon)
+               if (next_tok.type == Token_Semicolon)
                   {
                      bool is_valid_macro          = false;
-                     const char *macro_name       = curr_tok->c_val;
+                     const char *macro_name       = curr_tok.c_val;
                      unsigned int macro_name_hash = str_hash (macro_name);
 
                      // search the macro
                      for (unsigned int i = 0; i < m->macros.size; i++)
                         {
-                           macro_t *curr_macro = malloc (sizeof (macro_t));
-                           curr_macro = (macro_t *)vector_at (&m->macros, i);
+                           macro_t curr_macro
+                               = *(macro_t *)vector_at (&m->macros, i);
 
                            // append macro body if match
-                           if (curr_macro->hash == macro_name_hash)
+                           if (curr_macro.hash == macro_name_hash)
                               {
                                  is_valid_macro = true;
 
                                  for (unsigned int j = 0;
-                                      j < curr_macro->body.size; j++)
+                                      j < curr_macro.body.size; j++)
                                     {
-                                       token_t *curr_body_token
-                                           = malloc (sizeof (token_t));
-                                       curr_body_token
-                                           = vector_at (&curr_macro->body, j);
+                                       token_t curr_body_token
+                                           = *(token_t *)vector_at (
+                                               &curr_macro.body, j);
                                        vector_push_elem (&new_tokens,
-                                                         curr_body_token);
+                                                         &curr_body_token);
                                     }
                               }
                         }
 
                      if (!is_valid_macro)
                         {
-                           cry (curr_tok, "bad macro '%s' was called",
+                           cry (&curr_tok, "bad macro '%s' was called",
                                 macro_name);
                         }
                   }
             }
          // at this point everything would've been expanded
-         vector_push_elem (&new_tokens, curr_tok);
+         vector_push_elem (&new_tokens, &curr_tok);
          idx++;
       }
 
-   m->tokens = new_tokens;
+   //   m->tokens = new_tokens;
+   replace_tokens(&m->tokens, &new_tokens);
+}
+
+void
+macromiser_free (macromiser_t *m)
+{
+
+   // Free heap fields in macro bodies
+   for (unsigned int i = 0; i < m->macros.size; i++)
+      {
+         macro_t *mm = (macro_t *)vector_at (&m->macros, i);
+         free_token_heap_fields_vector (&mm->body);
+         vector_free (&mm->body);
+      }
+   vector_free (&m->macros);
+
+   // Free heap fields in final token list
+   free_token_heap_fields_vector (&m->tokens);
+   vector_free (&m->tokens);
 }
