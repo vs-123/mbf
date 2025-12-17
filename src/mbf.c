@@ -56,7 +56,6 @@ mbf_expand_number_prefixes (vector_t *tokens)
                token_t next_tok = *(token_t *)vector_at (tokens, i + 1);
                if (next_tok.type != Token_Plus && next_tok.type != Token_Minus)
                   {
-                     printf ("times %d\n", times);
                      cry (&next_tok, "expected either + or -, got a %s",
                           tok_to_str (next_tok.type));
                   }
