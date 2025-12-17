@@ -1,11 +1,13 @@
-MBF
-===
+~=~=~=~=~
+|| MBF ||
+~=~=~=~=~
    mbf is a modified implementation of the esoteric programming language Brainfuck (https://en.wikipedia.org/wiki/Brainfuck), with the addition of macros along with it.
 
 `mbf` stands for "macro brainfuck".
 
-[USAGE -- HELLO WORLD]
-----------------------
+~=~=~=~=~=~=~=~=~=~=~=~=~=
+|| USAGE -- HELLO WORLD ||
+~=~=~=~=~=~=~=~=~=~=~=~=~=
    ###################
    # hello_world.mbf #
    ###################
@@ -37,15 +39,33 @@ MBF
    
    % mbf ./hello_world.mbf
    Hello, World!
+
+   % mbf -E expanded.bf hello_world.mbf
+   [SUCCESS] file was successfully written!
    
-   % mbf -E ./hello_world.mbf
+   % cat expanded.bf
    >++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.
 
-[EXAMPLES]
-----------
+~=~=~=~=~=~=~=
+|| FEATURES ||
+~=~=~=~=~=~=~=
+o   Strict superset of BF
+o   100% compatible with ordinary BF
+o   Includes an interpreter to execute MBF/BF code
+o   Lets you know when you make a syntax error
+o   Supports comments
+o   Macros can call another macros
+o   Insensitive to whitespaces/indentation
+o   Lets you save the compiled BF code
+o   Includes =-h=/=--help= option for help
+
+~=~=~=~=~=~=~=
+|| EXAMPLES ||
+~=~=~=~=~=~=~=
    You may find more examples in `example/` directory.
 
-[LICENSE]
----------
-   This program is licensed under AGPLv3 or later.
-   For more information, see `LICENSE` file.
+~=~=~=~=~=~=~
+|| LICENSE ||
+~=~=~=~=~=~=~
+   This program is licensed under AGPLv3 or later. No warranty.
+   For full terms, see `LICENSE` file.

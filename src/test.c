@@ -8,7 +8,7 @@ unsigned int tests_run    = 0;
 unsigned int tests_failed = 0;
 
 // preprocess_eq
-#define peq(mbf, str)                                                  \
+#define peq(mbf, str)                                                         \
    do                                                                         \
       {                                                                       \
          string_t exp = mbf_preprocess (mbf);                                 \
@@ -71,7 +71,7 @@ tests (void)
 
    // macro expansion
    peq ("a{2+}a;", "++");
-   peq("z{[-]} a{z;2+} a;", "[-]++");
+   peq ("z{[-]} a{z;2+} a;", "[-]++");
 }
 
 int
@@ -84,7 +84,7 @@ main (void)
 
    puts ("");
 
-   puts ("~=~=~=~=~=~=~");   
+   puts ("~=~=~=~=~=~=~");
    puts ("|| RESULTS ||");
    puts ("~=~=~=~=~=~=~");
    printf ("TOTAL TESTS: %u, PASSED: %u, FAILED: %u\n", tests_run,
