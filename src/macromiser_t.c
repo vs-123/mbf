@@ -121,6 +121,7 @@ macromiser_collect_macros (macromiser_t *m)
                            cry (&curr_tok, "expected ending curly brace }, "
                                            "found end of file instead.");
                         }
+		     
                      macro_t macro = new_macro (macro_name, macro_body);
                      vector_push_elem (&m->macros, &macro);
                      if (orig_ident->c_val)
@@ -139,12 +140,13 @@ macromiser_collect_macros (macromiser_t *m)
    replace_tokens (&m->tokens, &new_tokens);
 }
 
-void
+bool
 macromiser_expand_macros (macromiser_t *m)
 {
    vector_t new_tokens    = new_vector (32, sizeof (token_t));
    unsigned int idx       = 0;
    unsigned int prog_size = m->tokens.size;
+   bool any_macros_expanded = false;
 
    while (idx < prog_size)
       {
@@ -185,8 +187,9 @@ macromiser_expand_macros (macromiser_t *m)
                                        vector_push_elem (&new_tokens,
                                                          &curr_body_token);
                                     }
-				 
-				 has_expanded = true;
+
+                                 has_expanded = true;
+				 any_macros_expanded = true;
                               }
                         }
 
@@ -196,7 +199,7 @@ macromiser_expand_macros (macromiser_t *m)
                                 macro_name);
                         }
 
-		     idx += 2;
+		     idx += 1;
                   }
             }
          // at this point everything would've been expanded
@@ -207,7 +210,12 @@ macromiser_expand_macros (macromiser_t *m)
       }
 
    //   m->tokens = new_tokens;
-   replace_tokens(&m->tokens, &new_tokens);
+   replace_tokens (&m->tokens, &new_tokens);
+   if (any_macros_expanded)
+      {
+	 return macromiser_expand_macros(m);
+      }
+   return any_macros_expanded;
 }
 
 void

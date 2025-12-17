@@ -1,0 +1,6 @@
+72+ . + . > 10+ .
+
+# 72+ .  --- sets current cell to 72 and prints it (ASCII: H)
+# + .    --- sets current cell to 73 and prints it (ASCII: I)
+# >      --- moves to next cell
+# 10+ .  --- sets current cell to 10 and prints it (ASCII: LF)

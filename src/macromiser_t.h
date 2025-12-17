@@ -4,6 +4,10 @@
 #include "tokeniser_t.h"
 #include "vector.h"
 
+#define bool int
+#define true 1
+#define false 0
+
 typedef struct
 {
    // instead of storing the macro name,
@@ -26,7 +30,7 @@ macromiser_t new_macromiser (vector_t tokens);
 void macromiser_collect_macros (macromiser_t *);
 
 // expands macros into =tokens=
-void macromiser_expand_macros (macromiser_t *);
+bool macromiser_expand_macros (macromiser_t *);
 
 void macromiser_free(macromiser_t*);
 
