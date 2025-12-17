@@ -74,7 +74,7 @@ parse_args (unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
                   {
                      fprintf (stderr,
                               "[ERROR] expected output file after %s.\n", arg);
-		     exit (0);
+                     exit (0);
                   }
                i++;
                mbf_opts->should_only_expand = true;
@@ -99,8 +99,6 @@ parse_args (unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
          fprintf (stderr, "[ERROR] mbf program file was not provided.\n");
          exit (1);
       }
-
-
 }
 
 int
@@ -142,7 +140,7 @@ main (int argc, char **argv)
             }
          fprintf (output_file, "%s", mbf_expanded.elems);
          fclose (output_file);
-	 printf("[SUCCESS] file was successfully written!\n");
+         printf ("[SUCCESS] file was successfully written!\n");
       }
    else
       {

@@ -407,6 +407,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
                      // cry(tokeniser, "before curr char : %c", current_char);
 
                      tokenise_ident (tokeniser);
+		     continue;
                      // cry(tokeniser, "after curr char : %c", current_char);
                      // const token_t *ident = vector_at (&tokeniser->tokens,
                      // 0); cry (tokeniser, "found ident: %s", ident->c_val);
