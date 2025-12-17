@@ -3,7 +3,7 @@
 ~=~=~=~=~
    mbf is a modified implementation of the esoteric programming language Brainfuck (https://en.wikipedia.org/wiki/Brainfuck), with the addition of macros along with it.
 
-`mbf` stands for "macro brainfuck".
+   `mbf` stands for "macro brainfuck".
 
 ~=~=~=~=~=~=~=~=~
 || HELLO WORLD ||
