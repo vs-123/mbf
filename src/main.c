@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "bf.h"
 #include "mbf.h"
 #include "tokeniser_t.h"
 #include "vector.h"
@@ -40,10 +41,6 @@ main (void)
 
   string_t mbf_expanded = mbf_preprocess (program);
 
-  printf ("here we are: %s\n", mbf_expanded.elems);
-
+  mbf_exec_bf (mbf_expanded.elems);
   string_free(&mbf_expanded);
-
-   //   free ((void *)mbf_expanded);
-   // mbf_exec_bf (mbf_expanded);
 }
