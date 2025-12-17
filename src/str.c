@@ -42,3 +42,12 @@ string_at (string_t *this, unsigned int index)
 {
    return (char *)this->elems + index * sizeof(char);
 }
+
+void
+string_free (string_t *str)
+{
+   free (str->elems);
+   str->elems = NULL;
+   str->capacity = 0;
+   str->size = 0;
+}

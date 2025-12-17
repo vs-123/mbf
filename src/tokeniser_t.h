@@ -48,6 +48,10 @@ typedef struct
    line_col_t lc; // line & col
 } token_t;
 
+void token_free (token_t *);
+
+void token_free_wrapper(void *p);
+
 typedef struct
 {
    const char *program;
@@ -60,5 +64,7 @@ void print_tokens (vector_t tokens);
 string_t tokens_to_bf_str (vector_t tokens);
 
 void mbf_tokenise (tokeniser_t *tokeniser);
+
+void tokeniser_free(tokeniser_t*);
 
 #endif // TOKENISER_T_H

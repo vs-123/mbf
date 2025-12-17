@@ -78,12 +78,13 @@ tokenise_ident (tokeniser_t *tokeniser)
 
    tokeniser->prog_idx--;
 
-   token_t *token = malloc (sizeof (token_t));
-   token->type    = Token_Ident;
-   token->c_val   = eaten_alnum.elems;
-   token->lc      = lc;
+   token_t token = {
+      .type  = Token_Ident,
+      .c_val = eaten_alnum.elems,
+      .lc    = lc,
+   };
 
-   vector_push_elem (&tokeniser->tokens, (void *)token);
+   vector_push_elem (&tokeniser->tokens, &token);
 }
 
 void
@@ -106,12 +107,13 @@ tokenise_num (tokeniser_t *tokeniser)
 
    tokeniser->prog_idx--;
 
-   token_t *token = malloc (sizeof (token_t));
-   token->type    = Token_Number;
-   token->n_val   = eaten_num;
-   token->lc      = lc;
+   token_t token = {
+      .type  = Token_Number,
+      .n_val = eaten_num,
+      .lc    = lc,
+   };
 
-   vector_push_elem (&tokeniser->tokens, (void *)token);
+   vector_push_elem (&tokeniser->tokens, &token);
 }
 
 char *
@@ -254,8 +256,6 @@ mbf_tokenise (tokeniser_t *tokeniser)
    tokeniser->tokens = new_vector (32, sizeof (token_t));
    char current_char = '\1';
 
-   unsigned int prog_size = strlen (tokeniser->program);
-
    while (current_char != '\0')
       {
          current_char = tokeniser->program[tokeniser->prog_idx];
@@ -278,100 +278,119 @@ mbf_tokenise (tokeniser_t *tokeniser)
 
             case '{':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_LCurly;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_LCurly,
+                     .lc   = get_line_col (tokeniser),
+                  };
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '}':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_RCurly;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_RCurly,
+                     .lc   = get_line_col (tokeniser),
+                  };
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '+':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_Plus;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_Plus,
+                     .lc   = get_line_col (tokeniser),
+                  };
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '-':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_Minus;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_Minus,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '<':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_Left;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_Left,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '>':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_Right;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_Right,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '[':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_LLoop;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_LLoop,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case ']':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_RLoop;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_RLoop,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '.':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_Dot;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_Dot,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case ';':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_Semicolon;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_Semicolon,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
             case '\0':
                {
-                  token_t *token = malloc (sizeof (token_t));
-                  token->type    = Token_EOF;
-                  token->lc      = get_line_col (tokeniser);
-                  vector_push_elem (&tokeniser->tokens, (void *)token);
+                  token_t tok = {
+                     .type = Token_EOF,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
 
@@ -399,4 +418,21 @@ mbf_tokenise (tokeniser_t *tokeniser)
 
          tokeniser->prog_idx++;
       }
+}
+
+void
+tokeniser_free (tokeniser_t *tokeniser)
+{
+
+   for (unsigned int i = 0; i < tokeniser->tokens.size; i++)
+      {
+         token_t *tok = (token_t *)vector_at (&tokeniser->tokens, i);
+         if (tok->type == Token_Ident && tok->c_val)
+            {
+               free ((void *)tok->c_val);
+               tok->c_val = NULL;
+            }
+      }
+   vector_free (&tokeniser->tokens);
+   tokeniser->prog_idx = 0;
 }

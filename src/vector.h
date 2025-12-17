@@ -15,4 +15,7 @@ void vector_push_elem (vector_t *this, void *elem);
 
 void *vector_at (vector_t *this, unsigned int index);
 
+void vector_free (vector_t *v);
+
+
 #endif // VECTOR_H

@@ -68,14 +68,12 @@ macromiser_collect_macros (macromiser_t *m)
             }
 
          token_t *next_tok  = (token_t *)vector_at (&m->tokens, idx + 1);
-         bool is_macro_defn = false;
 
          if (curr_tok->type == Token_Ident)
             {
 
                if (next_tok->type == Token_LCurly)
                   {
-                     is_macro_defn          = true;
                      const char *macro_name = curr_tok->c_val;
                      vector_t macro_body = new_vector (16, sizeof (token_t));
                      idx++;

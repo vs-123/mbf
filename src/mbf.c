@@ -41,56 +41,53 @@ mbf_expand_number_prefixes (vector_t *tokens)
    // except for numbers and the token that
    // follows it.
 
-   vector_t expanded_tokens = new_vector (tokens->size, tokens->elem_size);
+   vector_t expanded_tokens = new_vector (tokens->size, sizeof (token_t));
 
    unsigned int i = 0;
    while (i < tokens->size)
       {
-         token_t *curr_tok = (token_t *)vector_at (tokens, i);
+         token_t curr_tok = *(token_t *)vector_at (tokens, i);
 
-         switch (curr_tok->type)
+         if (curr_tok.type == Token_Number)
             {
-            case Token_Number:
-               {
-                  unsigned int times = curr_tok->n_val;
 
-                  token_t *next_tok = (token_t *)vector_at (tokens, i + 1);
-                  if (next_tok->type != Token_Plus
-                      && next_tok->type != Token_Minus)
-                     {
-                        printf ("times %d\n", times);
-                        cry (next_tok, "expected either + or -, got a %s",
-                             tok_to_str (next_tok->type));
-                     }
+               unsigned int times = curr_tok.n_val;
 
-                  i++;
-                  curr_tok = (token_t *)vector_at (tokens, i);
+               token_t next_tok = *(token_t *)vector_at (tokens, i + 1);
+               if (next_tok.type != Token_Plus
+                   && next_tok.type != Token_Minus)
+                  {
+                     printf ("times %d\n", times);
+                     cry (&next_tok, "expected either + or -, got a %s",
+                          tok_to_str (next_tok.type));
+                  }
 
-                  // curr_tok is now either + or -
+               i++;
+               curr_tok = *(token_t *)vector_at (tokens, i);
 
-                  for (unsigned int i = 0; i < times; i++)
-                     {
-                        vector_push_elem (&expanded_tokens, curr_tok);
-                     }
-               }
-               break;
+               // curr_tok is now either + or -
 
-            default:
-               vector_push_elem (&expanded_tokens, curr_tok);
-               break;
+               for (unsigned int i = 0; i < times; i++)
+                  {
+                     vector_push_elem (&expanded_tokens, &curr_tok);
+                  }
+            }
+         else
+            {
+               vector_push_elem (&expanded_tokens, &curr_tok);
             }
          i++;
       }
 
-   memmove (tokens, &expanded_tokens,
-            expanded_tokens.size * expanded_tokens.elem_size);
+   vector_t old = *tokens;
+   *tokens      = expanded_tokens;
+   vector_free(&old);
 }
 
-const char *
+string_t
 mbf_preprocess (const char *program)
 {
-   char *expanded_bf = malloc (sizeof (char) * 256);
-
+   string_t expanded_bf  = new_string (256);
    tokeniser_t tokeniser = {
       .program = program, .prog_idx = 0,
       // .tokens not initialised -- inited by =mbf_tokenise=
@@ -101,23 +98,23 @@ mbf_preprocess (const char *program)
    //   print_tokens(tokeniser.tokens);
    mbf_expand_number_prefixes (&tokeniser.tokens);
 
+   tokeniser_free (&tokeniser);
+
    // for actual macros, we will use a two-phase approach -- first collect,
    // then expand
 
    // what's the noun for something that collects macros?
    //   i'll go with `macromiser`, sounds good enough
 
-   macromiser_t macromiser = new_macromiser (tokeniser.tokens);
+   // macromiser_t macromiser = new_macromiser (tokeniser.tokens);
 
-   macromiser_collect_macros (&macromiser);
+   //   macromiser_collect_macros (&macromiser);
 
-   macromiser_expand_macros (&macromiser);
+   //   macromiser_expand_macros (&macromiser);
 
-   string_t bf_str = tokens_to_bf_str (macromiser.tokens);
-
-   printf ("Generated BF:\n%s\n", bf_str.elems);
-
-   assert (0 && "bf code was generated, now what?");
+   //   string_t bf_str = tokens_to_bf_str (macromiser.tokens);
 
    return expanded_bf;
+
+   //   return expanded_bf;
 }

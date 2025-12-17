@@ -5,6 +5,13 @@
 #include "tokeniser_t.h"
 #include "vector.h"
 
+string_t
+test (void)
+{
+   string_t s = new_string (32);
+   return s;
+}
+
 int
 main (void)
 {
@@ -31,14 +38,11 @@ main (void)
                          "# call hello\n"
                          "hello ;\n";
 
-   //   vector_t v = new_vector (32, sizeof (token_t));
-   //   token_t *t1 = malloc(sizeof(token_t));
-   //   vector_push_elem(&v, (void*));
-   //
-   //   return 0;
+  string_t mbf_expanded = mbf_preprocess (program);
 
-   const char *mbf_expanded = mbf_preprocess (program);
-   printf ("%s\n", mbf_expanded);
+  printf ("here we are: %s\n", mbf_expanded.elems);
+
+  string_free(&mbf_expanded);
 
    //   free ((void *)mbf_expanded);
    // mbf_exec_bf (mbf_expanded);

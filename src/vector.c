@@ -44,3 +44,11 @@ vector_at (vector_t *this, unsigned int index)
 {
    return (char *)this->elems + index * this->elem_size;
 }
+
+void
+vector_free (vector_t *v)
+{
+   free (v->elems);
+   v->elems = NULL;
+   v->size = v->capacity = 0;
+}
