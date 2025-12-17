@@ -10,6 +10,7 @@ build: $(SRC)
 	@ echo "[INFO] building..."
 	@ mkdir -p $(BUILD)
 	@ $(CC) -o $(BUILD_PROGRAM) $(OPTS) $(SRC) src/main.c
+	@ echo "[SUCCESS] successfully built!"
 
 run: build
 	@ echo "[INFO] running..."
@@ -25,5 +26,6 @@ test: $(SRC)
 clean:
 	@ echo "[INFO] cleaning..."
 	@ rm -rf $(BUILD)
+	@ echo "[SUCCESS] cleaned successfully!"
 
 .PHONY: build run clean

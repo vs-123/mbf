@@ -5,9 +5,9 @@
 
 `mbf` stands for "macro brainfuck".
 
-~=~=~=~=~=~=~=~=~=~=~=~=~=
-|| USAGE -- HELLO WORLD ||
-~=~=~=~=~=~=~=~=~=~=~=~=~=
+~=~=~=~=~=~=~=~=~
+|| HELLO WORLD ||
+~=~=~=~=~=~=~=~=~
    ###################
    # hello_world.mbf #
    ###################
@@ -35,7 +35,7 @@
    # SHELL #
    #########
    
-   % # use mbf -h for help
+   % # use =mbf -h= for help
    
    % mbf ./hello_world.mbf
    Hello, World!
@@ -57,15 +57,53 @@ o   Supports comments
 o   Macros can call another macros
 o   Insensitive to whitespaces/indentation
 o   Lets you save the compiled BF code
-o   Includes =-h=/=--help= option for help
+o   Includes =-h= / =--help= option for help
+
+~=~=~=~=~=~=~=~=
+|| HOW TO USE ||
+~=~=~=~=~=~=~=~=
+o   Prerequisites:
+       o   GNU Make
+       o   C compiler
+
+o   Clone this repository into =mbf/= and =cd= into it:
+       % git clone https://github.com/vs-123/mbf.git
+       % ls
+       ./ ../ mbf/
+       % cd mbf/
+
+o   Ensure you set =CC= environment variable in case =make= fails to find your C compiler.
+o   Use =make= to build the project:
+       % pwd
+       ~/mbf
+       
+       % make build
+       [INFO] building...
+       [SUCCESS] successfully built!
+       
+       % ls build/ && cd $_
+       ./ ../ mbf*
+       
+       % ./mbf ../examples/hello_world.mbf
+       Hello, World!
+
+o   To run tests, use =make test=:
+       % make test
+       [INFO] building tests...
+       [INFO] running tests...
+      
+o   To perform a clean operation, use =make clean=:
+       % make clean
+       [INFO] cleaning...
+       [SUCCESS] cleaned successfully!
 
 ~=~=~=~=~=~=~=
 || EXAMPLES ||
 ~=~=~=~=~=~=~=
-   You may find more examples in `example/` directory.
+   You may find more examples in =example/= directory.
 
 ~=~=~=~=~=~=~
 || LICENSE ||
 ~=~=~=~=~=~=~
    This program is licensed under AGPLv3 or later. No warranty.
-   For full terms, see `LICENSE` file.
+   For full terms, see =LICENSE= file.
