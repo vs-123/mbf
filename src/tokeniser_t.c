@@ -160,6 +160,8 @@ tok_to_str (token_type_t tok_type)
 
       case Token_Dot:
          return "Token_Dot";
+      case Token_Comma:
+         return "Token_Comma";	 
 
          // Misc.
       case Token_EOF:
@@ -217,6 +219,12 @@ tokens_to_bf_str (vector_t tokens)
                   bf_c = '.';
                }
                break;
+
+            case Token_Comma:
+               {
+                  bf_c = ',';
+               }
+               break;	       
 
             default:
                // anything here will be an invalid token
@@ -379,6 +387,17 @@ mbf_tokenise (tokeniser_t *tokeniser)
                   vector_push_elem (&tokeniser->tokens, &tok);
                }
                break;
+
+            case ',':
+               {
+                  token_t tok = {
+                     .type = Token_Comma,
+                     .lc   = get_line_col (tokeniser),
+                  };
+
+                  vector_push_elem (&tokeniser->tokens, &tok);
+               }
+               break;	       
 
             case ';':
                {

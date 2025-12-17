@@ -35,7 +35,7 @@
    # SHELL #
    #########
    
-   % # use =mbf -h= for help
+   % # use `mbf -h` for help
    
    % mbf ./hello_world.mbf
    Hello, World!
@@ -73,6 +73,7 @@ o   Clone this repository into =mbf/= and =cd= into it:
        % cd mbf/
 
 o   Ensure you set =CC= environment variable in case =make= fails to find your C compiler.
+
 o   Use =make= to build the project:
        % pwd
        ~/mbf

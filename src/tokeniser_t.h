@@ -32,6 +32,7 @@ typedef enum
    Token_RLoop,
 
    Token_Dot,
+   Token_Comma,
 
    // Misc.
    Token_EOF,
