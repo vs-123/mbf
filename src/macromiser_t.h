@@ -30,8 +30,9 @@ macromiser_t new_macromiser (vector_t tokens);
 void macromiser_collect_macros (macromiser_t *);
 
 // expands macros into =tokens=
-bool macromiser_expand_macros (macromiser_t *);
+bool macromiser_expand_macros (macromiser_t *m, unsigned int *expansion_stack,
+                               unsigned int *expansion_depth);
 
-void macromiser_free(macromiser_t*);
+void macromiser_free (macromiser_t *);
 
 #endif // MACROMISER_T_H

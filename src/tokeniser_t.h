@@ -43,15 +43,15 @@ typedef struct
    token_type_t type;
    union
    {
-      unsigned int n_val;
-      const char *c_val;
-   };
+      unsigned int num;
+      const char *chars;
+   } value;
    line_col_t lc; // line & col
 } token_t;
 
 void token_free (token_t *);
 
-void token_free_wrapper(void *p);
+void token_free_wrapper (void *p);
 
 typedef struct
 {
@@ -66,6 +66,6 @@ string_t tokens_to_bf_str (vector_t tokens);
 
 void mbf_tokenise (tokeniser_t *tokeniser);
 
-void tokeniser_free(tokeniser_t*);
+void tokeniser_free (tokeniser_t *);
 
 #endif // TOKENISER_T_H

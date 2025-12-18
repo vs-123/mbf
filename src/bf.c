@@ -19,27 +19,27 @@ mbf_exec_bf (const char *bf)
             case '>':
                ptr++;
                break;
-	       
+
             case '<':
                ptr--;
                break;
-	       
+
             case '+':
                (*ptr)++;
                break;
-	       
+
             case '-':
                (*ptr)--;
                break;
-	       
+
             case '.':
                putchar (*ptr);
                break;
-	       
+
             case ',':
                *ptr = getchar ();
                break;
-	       
+
             case '[':
                if (*ptr == 0)
                   {
@@ -54,7 +54,7 @@ mbf_exec_bf (const char *bf)
                         }
                   }
                break;
-	       
+
             case ']':
                if (*ptr != 0)
                   {
@@ -69,7 +69,7 @@ mbf_exec_bf (const char *bf)
                         }
                   }
                break;
-	       
+
             default:
                break;
             }

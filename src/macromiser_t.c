@@ -35,10 +35,10 @@ free_token_heap_fields_vector (vector_t *v)
    for (unsigned int i = 0; i < v->size; i++)
       {
          token_t *t = (token_t *)vector_at (v, i);
-         if (t->type == Token_Ident && t->c_val)
+         if (t->type == Token_Ident && t->value.chars)
             {
-               free ((void*)t->c_val);
-               t->c_val = NULL;
+               free ((void *)t->value.chars);
+               t->value.chars = NULL;
             }
       }
 }
@@ -48,7 +48,6 @@ replace_tokens (vector_t *dst, vector_t *src)
 {
    vector_t old = *dst;
    *dst         = *src;
-   // src is moved; don't free src
    vector_free (&old);
 }
 
@@ -76,6 +75,21 @@ new_macromiser (vector_t tokens)
 }
 
 void
+macromiser_free (macromiser_t *m)
+{
+   for (unsigned int i = 0; i < m->macros.size; i++)
+      {
+         macro_t *mm = (macro_t *)vector_at (&m->macros, i);
+         free_token_heap_fields_vector (&mm->body);
+         vector_free (&mm->body);
+      }
+   vector_free (&m->macros);
+
+   free_token_heap_fields_vector (&m->tokens);
+   vector_free (&m->tokens);
+}
+
+void
 macromiser_collect_macros (macromiser_t *m)
 {
    unsigned int idx       = 0;
@@ -97,8 +111,9 @@ macromiser_collect_macros (macromiser_t *m)
 
                if (next_tok.type == Token_LCurly)
                   {
-		     token_t *orig_ident = (token_t*)vector_at(&m->tokens, idx);
-                     const char *macro_name = curr_tok.c_val;
+                     token_t *orig_ident
+                         = (token_t *)vector_at (&m->tokens, idx);
+                     const char *macro_name = curr_tok.value.chars;
                      vector_t macro_body = new_vector (16, sizeof (token_t));
                      idx += 2;
                      while (idx < prog_size)
@@ -121,16 +136,18 @@ macromiser_collect_macros (macromiser_t *m)
                            cry (&curr_tok, "expected ending curly brace }, "
                                            "found end of file instead.");
                         }
-		     
+
                      macro_t macro = new_macro (macro_name, macro_body);
                      vector_push_elem (&m->macros, &macro);
-                     if (orig_ident->c_val)
+                     if (orig_ident->value.chars)
                         {
-			   free((void *)orig_ident->c_val); orig_ident->c_val = NULL; 
+                           free ((void *)orig_ident->value.chars);
+                           orig_ident->value.chars = NULL;
                         }
                      continue;
                   }
             }
+
          // at this point, curr_tok is either Token_RCurly or something else.
          vector_push_elem (&new_tokens, &curr_tok);
          idx++;
@@ -140,98 +157,108 @@ macromiser_collect_macros (macromiser_t *m)
    replace_tokens (&m->tokens, &new_tokens);
 }
 
-bool
-macromiser_expand_macros (macromiser_t *m)
+static bool
+is_in_expansion_stack (const unsigned int *stack, unsigned int depth,
+                       unsigned int h)
 {
-   vector_t new_tokens    = new_vector (32, sizeof (token_t));
-   unsigned int idx       = 0;
-   unsigned int prog_size = m->tokens.size;
-   bool any_macros_expanded = false;
-
-   while (idx < prog_size)
+   for (unsigned int i = 0; i < depth; i++)
       {
-         token_t curr_tok = *(token_t *)vector_at (&m->tokens, idx);
-         if (curr_tok.type == Token_EOF)
+         if (stack[i] == h)
+            return true;
+      }
+   return false;
+}
+
+static void
+expand_tokens_into (vector_t *expanded_tokens, vector_t *tokens,
+                    vector_t *macros, unsigned int *expansion_stack,
+                    unsigned int *expansion_depth)
+{
+   unsigned int i       = 0;
+   const unsigned int n = tokens->size;
+
+   while (i < n)
+      {
+         token_t curr = *(token_t *)vector_at (tokens, i);
+         if (curr.type == Token_EOF)
             {
                break;
             }
 
-         token_t next_tok = *(token_t *)vector_at (&m->tokens, idx + 1);
-	 bool has_expanded = false;
+         token_t next = (i + 1 < n)
+                            ? *(token_t *)vector_at (tokens, i + 1)
+                            : (token_t){ .type = Token_EOF, .lc = curr.lc };
 
-         if (curr_tok.type == Token_Ident)
+         if (curr.type == Token_Ident && next.type == Token_Semicolon)
             {
-               if (next_tok.type == Token_Semicolon)
+               const char *name = curr.value.chars;
+               unsigned int h   = str_hash (name);
+
+               // detect infinite-expansion cycles
+               if (is_in_expansion_stack (expansion_stack, *expansion_depth,
+                                          h))
                   {
-                     bool is_valid_macro          = false;
-                     const char *macro_name       = curr_tok.c_val;
-                     unsigned int macro_name_hash = str_hash (macro_name);
+                     cry (&curr,
+                          "macro `%s` eventually expands to itself, leading "
+                          "to an infinite expansion.",
+                          name);
+                  }
 
-                     // search the macro
-                     for (unsigned int i = 0; i < m->macros.size; i++)
+               // find macro and expand its body recursively
+               bool found = false;
+               for (unsigned int m = 0; m < macros->size; m++)
+                  {
+                     macro_t mm = *(macro_t *)vector_at (macros, m);
+                     if (mm.hash == h)
                         {
-                           macro_t curr_macro
-                               = *(macro_t *)vector_at (&m->macros, i);
+                           found = true;
 
-                           // append macro body if macro exists
-                           if (curr_macro.hash == macro_name_hash)
+                           if (*expansion_depth >= 1024)
                               {
-                                 is_valid_macro = true;
-
-                                 for (unsigned int j = 0;
-                                      j < curr_macro.body.size; j++)
-                                    {
-                                       token_t curr_body_token
-                                           = *(token_t *)vector_at (
-                                               &curr_macro.body, j);
-                                       vector_push_elem (&new_tokens,
-                                                         &curr_body_token);
-                                    }
-
-                                 has_expanded = true;
-				 any_macros_expanded = true;
+                                 cry (&curr, "macro expansion depth exceeded");
                               }
-                        }
+                           expansion_stack[(*expansion_depth)++] = h;
 
-                     if (!is_valid_macro)
-                        {
-                           cry (&curr_tok, "bad macro '%s' was called",
-                                macro_name);
-                        }
+                           // recursively expand the macro body INTO =expanded_tokens=
+                           expand_tokens_into (expanded_tokens, &mm.body,
+                                               macros, expansion_stack,
+                                               expansion_depth);
 
-		     idx += 1;
+                           (*expansion_depth)--;
+
+                           i += 2; // skip ident and ';'
+                           goto continue_loop;
+                        }
+                  }
+
+               if (!found)
+                  {
+                     cry (&curr, "bad macro '%s' was called.", name);
                   }
             }
-         // at this point everything would've been expanded
-	 if (!has_expanded) {
-	    vector_push_elem (&new_tokens, &curr_tok);
-	 }
-         idx++;
-      }
 
-   //   m->tokens = new_tokens;
-   replace_tokens (&m->tokens, &new_tokens);
-   if (any_macros_expanded)
-      {
-	 return macromiser_expand_macros(m);
+         // default: copy through
+         vector_push_elem (expanded_tokens, &curr);
+         i++;
+
+      continue_loop:;
       }
-   return any_macros_expanded;
 }
 
-void
-macromiser_free (macromiser_t *m)
+// expand inline in a single pass. no recursion.
+// returns true if any macro was expanded in this pass.
+bool
+macromiser_expand_macros (macromiser_t *m, unsigned int *expansion_stack,
+                          unsigned int *expansion_depth)
 {
+   vector_t expanded_tokens = new_vector (32, sizeof (token_t));
+   unsigned int before      = m->tokens.size;
 
-   // Free heap fields in macro bodies
-   for (unsigned int i = 0; i < m->macros.size; i++)
-      {
-         macro_t *mm = (macro_t *)vector_at (&m->macros, i);
-         free_token_heap_fields_vector (&mm->body);
-         vector_free (&mm->body);
-      }
-   vector_free (&m->macros);
+   expand_tokens_into (&expanded_tokens, &m->tokens, &m->macros,
+                       expansion_stack, expansion_depth);
 
-   // Free heap fields in final token list
-   free_token_heap_fields_vector (&m->tokens);
-   vector_free (&m->tokens);
+   replace_tokens (&m->tokens, &expanded_tokens);
+
+   // consider "something was expanded" if size differs
+   return m->tokens.size != before;
 }

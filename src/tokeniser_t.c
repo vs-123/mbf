@@ -85,7 +85,7 @@ tokenise_ident (tokeniser_t *tokeniser)
 
    token_t token = {
       .type  = Token_Ident,
-      .c_val = name,
+      .value.chars = name,
       .lc    = lc,
    };
 
@@ -116,7 +116,7 @@ tokenise_num (tokeniser_t *tokeniser)
 
    token_t token = {
       .type  = Token_Number,
-      .n_val = eaten_num,
+      .value.num = eaten_num,
       .lc    = lc,
    };
 
@@ -255,11 +255,11 @@ print_tokens (vector_t tokens)
 
          if (tt_t == Token_Number)
             {
-               printf ("n_val: %d;", curr_tok->n_val);
+               printf ("value.num: %d;", curr_tok->value.num);
             }
          else if (tt_t == Token_Ident)
             {
-               printf ("c_val: %s;", curr_tok->c_val);
+               printf ("value.chars: %s;", curr_tok->value.chars);
             }
 
          printf ("\n");
@@ -430,7 +430,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
                      continue;
                      // cry(tokeniser, "after curr char : %c", current_char);
                      // const token_t *ident = vector_at (&tokeniser->tokens,
-                     // 0); cry (tokeniser, "found ident: %s", ident->c_val);
+                     // 0); cry (tokeniser, "found ident: %s", ident->value.chars);
                   }
                else if (isdigit (current_char))
                   {
@@ -455,10 +455,10 @@ tokeniser_free (tokeniser_t *tokeniser)
    for (unsigned int i = 0; i < tokeniser->tokens.size; i++)
       {
          token_t *tok = (token_t *)vector_at (&tokeniser->tokens, i);
-         if (tok->type == Token_Ident && tok->c_val)
+         if (tok->type == Token_Ident && tok->value.chars)
             {
-               free ((void *)tok->c_val);
-               tok->c_val = NULL;
+               free ((void *)tok->value.chars);
+               tok->value.chars = NULL;
             }
       }
    vector_free (&tokeniser->tokens);

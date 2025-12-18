@@ -13,7 +13,7 @@ typedef struct
 {
    const char *program_file;
    bool can_expand;
-   bool should_only_expand;
+   bool should_save_expansion_to_file;
    const char *output_file;
 } mbf_opts_t;
 
@@ -44,14 +44,14 @@ print_help (char *mbf_name)
            "as-is\n"
            "   o   -bf                        --- interpret as BF\n"
            "\n"
-           "~=~=~=~=~=~=~\n"	   
+           "~=~=~=~=~=~=~\n"
            "|| EXAMPLE ||\n"
            "~=~=~=~=~=~=~\n"
            "   %% %s ./hello_world.mbf\n"
            "   %% %s -E output.bf ./hello_world.mbf\n"
            "   %% %s -bf ./output.bf\n"
            "\n"
-           "~=~=~=~=~=~=~\n"	   
+           "~=~=~=~=~=~=~\n"
            "|| LICENSE ||\n"
            "~=~=~=~=~=~=~\n"
            "   This program is licensed under AGPLv3-or-later. No warranty.\n"
@@ -62,9 +62,9 @@ print_help (char *mbf_name)
 void
 parse_args (unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
 {
-   mbf_opts->should_only_expand = false;
-   mbf_opts->can_expand         = true;
-   bool got_program             = false;
+   mbf_opts->should_save_expansion_to_file = false;
+   mbf_opts->can_expand                    = true;
+   bool got_program                        = false;
 
    if (argc < 2)
       {
@@ -90,9 +90,9 @@ parse_args (unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
                      exit (0);
                   }
                i++;
-               mbf_opts->can_expand         = true;
-               mbf_opts->should_only_expand = true;
-               mbf_opts->output_file        = argv[i];
+               mbf_opts->can_expand                    = true;
+               mbf_opts->should_save_expansion_to_file = true;
+               mbf_opts->output_file                   = argv[i];
             }
          else if (strcmp (arg, "-ne") == 0 || strcmp (arg, "-bf") == 0
                   || strcmp (arg, "--no-expand") == 0)
@@ -108,7 +108,6 @@ parse_args (unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
             }
          else
             {
-
                mbf_opts->program_file = arg;
                got_program            = true;
             }
@@ -147,23 +146,28 @@ main (int argc, char **argv)
    if (mbf_opts.can_expand)
       {
          string_t mbf_expanded = mbf_preprocess (program.elems);
-         if (!mbf_opts.should_only_expand)
+
+         if (mbf_opts.should_save_expansion_to_file)
+            {
+               FILE *output_file = fopen (mbf_opts.output_file, "w");
+               if (!output_file)
+                  {
+                     fprintf (stderr,
+                              "[ERROR] could not open output file '%s' for "
+                              "writing.\n",
+                              mbf_opts.output_file);
+                     return 1;
+                  }
+               fprintf (output_file, "%s", mbf_expanded.elems);
+               fclose (output_file);
+               string_free (&mbf_expanded);
+               printf ("[SUCCESS] file was successfully written!\n");
+            }
+         else
             {
                mbf_exec_bf (mbf_expanded.elems);
                string_free (&mbf_expanded);
             }
-         FILE *output_file = fopen (mbf_opts.output_file, "w");
-         if (!output_file)
-            {
-               fprintf (
-                   stderr,
-                   "[ERROR] could not open output file '%s' for writing.\n",
-                   mbf_opts.output_file);
-               return 1;
-            }
-         fprintf (output_file, "%s", mbf_expanded.elems);
-         fclose (output_file);
-         printf ("[SUCCESS] file was successfully written!\n");
       }
    else
       {

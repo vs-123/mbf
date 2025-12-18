@@ -1,0 +1,10 @@
+# mbf errors for both of these
+
+# direct cycle
+A{A;}
+A;
+
+# indirect cycle
+a{b;}
+b{a;}
+a;
