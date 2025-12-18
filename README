@@ -101,7 +101,7 @@ o   To perform a clean operation, use =make clean=:
 ~=~=~=~=~=~=~=
 || EXAMPLES ||
 ~=~=~=~=~=~=~=
-   You may find more examples in =example/= directory.
+   You may find more examples in =examples/= directory.
 
 ~=~=~=~=~=~=~
 || LICENSE ||
