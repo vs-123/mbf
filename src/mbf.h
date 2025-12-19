@@ -5,4 +5,4 @@
 
 string_t mbf_preprocess (const char *program);
 
-#endif //  MBF_H
+#endif /*  MBF_H */

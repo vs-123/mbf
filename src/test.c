@@ -7,7 +7,7 @@
 unsigned int tests_run    = 0;
 unsigned int tests_failed = 0;
 
-// preprocess_eq
+/* preprocess_eq */
 #define peq(mbf, str)                                                         \
    do                                                                         \
       {                                                                       \
@@ -57,19 +57,19 @@ unsigned int tests_failed = 0;
 void
 tests (void)
 {
-   // basic count tests
+   /* basic count tests */
    peq ("+", "+");
    peq ("1+", "+");
    peq ("0+", "");
    peq ("-+", "-+");
    peq ("-1-", "--");
 
-   // zero
+   /* zero */
    peq ("00+", "");
    peq ("00000000000000+", "");
    peq ("", "");
 
-   // macro expansion
+   /* macro expansion */
    peq ("a{2+}a;", "++");
    peq ("z{[-]} a{z;2+} a;", "[-]++");
 }

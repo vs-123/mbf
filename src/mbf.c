@@ -28,8 +28,8 @@ cry (const token_t *token, const char *format, ...)
    exit (1);
 }
 
-// [PARAMS]
-//    o   tokens -- vector_t of token_t's
+/* [PARAMS] */
+/*    o   tokens -- vector_t of token_t's */
 void
 mbf_expand_number_prefixes (vector_t *tokens)
 {
@@ -37,9 +37,9 @@ mbf_expand_number_prefixes (vector_t *tokens)
    assert (tokens->elem_size == sizeof (token_t)
            && "doesn't smell like a token_t...");
 
-   // we don't care about anything else,
-   // except for numbers and the token that
-   // follows it.
+   /* we don't care about anything else, */
+   /* except for numbers and the token that */
+   /* follows it. */
 
    vector_t expanded_tokens = new_vector (tokens->size, sizeof (token_t));
 
@@ -65,7 +65,7 @@ mbf_expand_number_prefixes (vector_t *tokens)
                i++;
                curr_tok = *(token_t *)vector_at (tokens, i);
 
-               // curr_tok is now either one of + - < >
+               /* curr_tok is now either one of + - < > */
                for (unsigned int i = 0; i < times; i++)
                   {
                      vector_push_elem (&expanded_tokens, &curr_tok);
@@ -89,28 +89,28 @@ mbf_preprocess (const char *program)
 {
    tokeniser_t tokeniser = {
       .program = program, .prog_idx = 0,
-      // .tokens not initialised -- inited by =mbf_tokenise=
+      /* .tokens not initialised -- inited by =mbf_tokenise= */
    };
 
    mbf_tokenise (&tokeniser);
    mbf_expand_number_prefixes (&tokeniser.tokens);
 
-   // for actual macros, we will use a two-phase approach:
-   //    1. collect
-   //    2. expand
+   /* for actual macros, we will use a two-phase approach: */
+   /*    1. collect */
+   /*    2. expand */
 
    unsigned int expansion_stack[1024];
    unsigned int expansion_depth = 0;
 
-   // what's the noun for something that collects macros?
-   //   i'll go with `macromiser`, sounds good enough
+   /* what's the noun for something that collects macros? */
+   /*   i'll go with `macromiser`, sounds good enough */
 
    macromiser_t macromiser = new_macromiser (tokeniser.tokens);
 
    macromiser_collect_macros (&macromiser);
 
-   // keep expanding until no macros are left, but let's not run it forever
-   // at most we'll have 32 expansion-passes
+   /* keep expanding until no macros are left, but let's not run it forever */
+   /* at most we'll have 32 expansion-passes */
    for (int pass = 0; pass < 32; pass++)
       {
          bool something_has_NOT_expanded = !macromiser_expand_macros (

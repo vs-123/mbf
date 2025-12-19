@@ -18,4 +18,4 @@ void *vector_at (vector_t *this, unsigned int index);
 void vector_free (vector_t *v);
 
 
-#endif // VECTOR_H
+#endif /* VECTOR_H */

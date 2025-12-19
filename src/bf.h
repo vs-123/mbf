@@ -3,4 +3,4 @@
 
 void mbf_exec_bf(const char *bf);
 
-#endif // BF_H 
+#endif /* BF_H  */

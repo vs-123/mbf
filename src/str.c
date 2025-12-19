@@ -20,7 +20,7 @@ new_string (unsigned int capacity)
 void
 string_push (string_t *this, char elem)
 {
-   // case 1: size >= capacity
+   /* case 1: size >= capacity */
    if (this->size >= this->capacity)
       {
          this->capacity *= 2;
@@ -31,7 +31,7 @@ string_push (string_t *this, char elem)
          this->elems = new_elems;
       }
 
-   // case 2: size < capacity
+   /* case 2: size < capacity */
    void *dest = (char *)this->elems + this->size * sizeof(char);
    memmove (dest, &elem, sizeof(char));
    this->size++;

@@ -22,7 +22,7 @@ new_vector (unsigned int capacity, unsigned int elem_size)
 void
 vector_push_elem (vector_t *this, void *elem)
 {
-   // case 1: size >= capacity
+   /* case 1: size >= capacity */
    if (this->size >= this->capacity)
       {
          this->capacity *= 2;
@@ -33,7 +33,7 @@ vector_push_elem (vector_t *this, void *elem)
          this->elems = new_elems;
       }
 
-   // case 2: size < capacity
+   /* case 2: size < capacity */
    void *dest = (char *)this->elems + this->size * this->elem_size;
    memmove (dest, elem, this->elem_size);
    this->size++;

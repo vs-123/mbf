@@ -75,7 +75,7 @@ parse_args (unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
       {
          const char *arg = argv[i];
 
-         // CLI OPTIONS
+         /* CLI OPTIONS */
          if (strcmp (arg, "-h") == 0 || strcmp (arg, "--help") == 0)
             {
                print_help (argv[0]);

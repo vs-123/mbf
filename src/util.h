@@ -3,4 +3,4 @@
 
 unsigned int str_hash (const char *str);
 
-#endif // UTIL_H
+#endif /* UTIL_H */

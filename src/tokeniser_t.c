@@ -37,9 +37,9 @@ get_line_col (const tokeniser_t *tokeniser)
    return lc;
 }
 
-// tbh compilers yelling errors
-// feels like it's crying
-// and yup this throws an error
+/* tbh compilers yelling errors */
+/* feels like it's crying */
+/* and yup this throws an error */
 static void
 cry (const tokeniser_t *tokeniser, const char *format, ...)
 {
@@ -61,11 +61,11 @@ cry (const tokeniser_t *tokeniser, const char *format, ...)
 void
 tokenise_ident (tokeniser_t *tokeniser)
 {
-   // we're at an isalpha character right now
-   // eat up isalnum characters until we hit a non-isalnum char
-   // and then push it as a token to tokeniser->tokens
+   /* we're at an isalpha character right now */
+   /* eat up isalnum characters until we hit a non-isalnum char */
+   /* and then push it as a token to tokeniser->tokens */
 
-   // starting with 32 capacity
+   /* starting with 32 capacity */
    string_t eaten_alnum = new_string (32);
    char curr_char       = '\1';
    line_col_t lc        = get_line_col (tokeniser);
@@ -78,15 +78,15 @@ tokenise_ident (tokeniser_t *tokeniser)
 
    tokeniser->prog_idx--;
 
-   size_t len = eaten_alnum.size; // number of chars pushed
+   size_t len = eaten_alnum.size; /* number of chars pushed */
    char *name = malloc (len + 1);
    memcpy (name, eaten_alnum.elems, len);
    name[len] = '\0';
 
    token_t token = {
-      .type  = Token_Ident,
+      .type        = Token_Ident,
       .value.chars = name,
-      .lc    = lc,
+      .lc          = lc,
    };
 
    string_free (&eaten_alnum);
@@ -97,11 +97,11 @@ tokenise_ident (tokeniser_t *tokeniser)
 void
 tokenise_num (tokeniser_t *tokeniser)
 {
-   // we're at an isdigit character right now
-   // eat up isalnum characters until we hit a non-isdigit char
-   // and then push it as a token to tokeniser->tokens
+   /* we're at an isdigit character right now */
+   /* eat up isalnum characters until we hit a non-isdigit char */
+   /* and then push it as a token to tokeniser->tokens */
 
-   // no malloc; it's a number
+   /* no malloc; it's a number */
    unsigned int eaten_num = 0;
    char curr_char         = '\1';
    line_col_t lc          = get_line_col (tokeniser);
@@ -115,9 +115,9 @@ tokenise_num (tokeniser_t *tokeniser)
    tokeniser->prog_idx--;
 
    token_t token = {
-      .type  = Token_Number,
+      .type      = Token_Number,
       .value.num = eaten_num,
-      .lc    = lc,
+      .lc        = lc,
    };
 
    vector_push_elem (&tokeniser->tokens, &token);
@@ -128,44 +128,11 @@ tok_to_str (token_type_t tok_type)
 {
    switch (tok_type)
       {
-         // MBF
-      case Token_Ident:
-         return "Token_Ident";
-      case Token_Number:
-         return "Token_Number";
-
-      case Token_LCurly:
-         return "Token_LCurly";
-      case Token_RCurly:
-         return "Token_RCurly";
-
-      case Token_Semicolon:
-         return "Token_Semicolon";
-
-         // Classic BF
-      case Token_Plus:
-         return "Token_Plus";
-      case Token_Minus:
-         return "Token_Minus";
-
-      case Token_Left:
-         return "Token_Left";
-      case Token_Right:
-         return "Token_Right";
-
-      case Token_LLoop:
-         return "Token_LLoop";
-      case Token_RLoop:
-         return "Token_RLoop";
-
-      case Token_Dot:
-         return "Token_Dot";
-      case Token_Comma:
-         return "Token_Comma";	 
-
-         // Misc.
-      case Token_EOF:
-         return "Token_EOF";
+#define X(t)                                                                  \
+   case t:                                                                    \
+      return #t;
+         TOKEN_TYPE_LIST
+#undef X
       }
 }
 
@@ -180,7 +147,7 @@ tokens_to_bf_str (vector_t tokens)
          char bf_c = ' ';
          switch (curr_tok.type)
             {
-               // Classic BF
+               /* Classic BF */
             case Token_Plus:
                {
                   bf_c = '+';
@@ -224,10 +191,10 @@ tokens_to_bf_str (vector_t tokens)
                {
                   bf_c = ',';
                }
-               break;	       
+               break;
 
             default:
-               // anything here will be an invalid token
+               /* anything here will be an invalid token */
                printf ("[WARNING %u:%u] unexpected token %s, skipping...\n",
                        curr_tok.lc.line, curr_tok.lc.col,
                        tok_to_str (curr_tok.type));
@@ -277,7 +244,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
          current_char = tokeniser->program[tokeniser->prog_idx];
          switch (current_char)
             {
-            // comments
+            /* comments */
             case '#':
                while (current_char != '\n' && current_char != '\0')
                   {
@@ -285,7 +252,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
                   }
                break;
 
-            // skip whitespaces, tabs and newlines
+            /* skip whitespaces, tabs and newlines */
             case '\t':
             case '\n':
             case '\r':
@@ -397,7 +364,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
 
                   vector_push_elem (&tokeniser->tokens, &tok);
                }
-               break;	       
+               break;
 
             case ';':
                {
@@ -424,13 +391,8 @@ mbf_tokenise (tokeniser_t *tokeniser)
             default:
                if (isalpha (current_char))
                   {
-                     // cry(tokeniser, "before curr char : %c", current_char);
-
                      tokenise_ident (tokeniser);
                      continue;
-                     // cry(tokeniser, "after curr char : %c", current_char);
-                     // const token_t *ident = vector_at (&tokeniser->tokens,
-                     // 0); cry (tokeniser, "found ident: %s", ident->value.chars);
                   }
                else if (isdigit (current_char))
                   {
