@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define DSTR_IMPL
 #include "bf.h"
 #include "mbf.h"
 
@@ -135,17 +136,17 @@ main (int argc, char **argv)
          return 1;
       }
 
-   string_t program = new_string (128);
+   dstr_t program = dstr_new ();
 
    char ch;
    while ((ch = fgetc (prog_file)) != EOF)
       {
-         string_push (&program, ch);
+         dstr_putc (&program, ch);
       }
 
    if (mbf_opts.can_expand)
       {
-         string_t mbf_expanded = mbf_preprocess (program.elems);
+         dstr_t mbf_expanded = mbf_preprocess (program.str);
 
          if (mbf_opts.should_save_expansion_to_file)
             {
@@ -158,22 +159,22 @@ main (int argc, char **argv)
                               mbf_opts.output_file);
                      return 1;
                   }
-               fprintf (output_file, "%s", mbf_expanded.elems);
+               fprintf (output_file, "%s", mbf_expanded.str);
                fclose (output_file);
-               string_free (&mbf_expanded);
+               dstr_free (&mbf_expanded);
                printf ("[SUCCESS] file was successfully written!\n");
             }
          else
             {
-               mbf_exec_bf (mbf_expanded.elems);
-               string_free (&mbf_expanded);
+               mbf_exec_bf (mbf_expanded.str);
+               dstr_free (&mbf_expanded);
             }
       }
    else
       {
-         mbf_exec_bf (program.elems);
+         mbf_exec_bf (program.str);
       }
 
    fclose (prog_file);
-   string_free (&program);
+   dstr_free (&program);
 }

@@ -1,4 +1,4 @@
-OPTS=-Wall -Wextra -Wpedantic -std=c99
+OPTS=-Wall -Wextra -Wpedantic -std=c99 -Ivendors/dstr
 SRC=$(filter-out %main.c %test.c, $(wildcard src/*.c))
 BUILD=build
 PROGRAM=mbf

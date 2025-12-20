@@ -84,7 +84,7 @@ mbf_expand_number_prefixes (vector_t *tokens)
    vector_free (&old);
 }
 
-string_t
+dstr_t
 mbf_preprocess (const char *program)
 {
    tokeniser_t tokeniser = {
@@ -121,7 +121,7 @@ mbf_preprocess (const char *program)
             }
       }
 
-   string_t bf_str = tokens_to_bf_str (macromiser.tokens);
+   dstr_t bf_str = tokens_to_bf_str (macromiser.tokens);
 
    macromiser_free (&macromiser);
 

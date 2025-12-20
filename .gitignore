@@ -4,6 +4,8 @@
 !examples/**
 !src/
 !src/**
+!vendors/
+!vendors/**
 
 !.clang-format
 !LICENSE

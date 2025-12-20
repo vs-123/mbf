@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "str.h"
+#include "dstr.h"
 
 line_col_t
 get_line_col (const tokeniser_t *tokeniser)
@@ -65,22 +65,21 @@ tokenise_ident (tokeniser_t *tokeniser)
    /* eat up isalnum characters until we hit a non-isalnum char */
    /* and then push it as a token to tokeniser->tokens */
 
-   /* starting with 32 capacity */
-   string_t eaten_alnum = new_string (32);
+   dstr_t eaten_alnum = dstr_new ();
    char curr_char       = '\1';
    line_col_t lc        = get_line_col (tokeniser);
 
    while ((isalnum ((curr_char = tokeniser->program[tokeniser->prog_idx++]))
            || curr_char == '_'))
       {
-         string_push (&eaten_alnum, curr_char);
+         dstr_putc (&eaten_alnum, curr_char);
       }
 
    tokeniser->prog_idx--;
 
-   size_t len = eaten_alnum.size; /* number of chars pushed */
+   size_t len = eaten_alnum.len; /* number of chars pushed */
    char *name = malloc (len + 1);
-   memcpy (name, eaten_alnum.elems, len);
+   memcpy (name, eaten_alnum.str, len);
    name[len] = '\0';
 
    token_t token = {
@@ -89,7 +88,7 @@ tokenise_ident (tokeniser_t *tokeniser)
       .lc          = lc,
    };
 
-   string_free (&eaten_alnum);
+   dstr_free (&eaten_alnum);
 
    vector_push_elem (&tokeniser->tokens, &token);
 }
@@ -136,11 +135,11 @@ tok_to_str (token_type_t tok_type)
       }
 }
 
-string_t
+dstr_t
 tokens_to_bf_str (vector_t tokens)
 {
    token_t curr_tok = { 0 };
-   string_t bf      = new_string (64);
+   dstr_t bf      = dstr_new ();
    for (unsigned int i = 0; i < tokens.size; i++)
       {
          curr_tok  = *(token_t *)vector_at (&tokens, i);
@@ -200,7 +199,7 @@ tokens_to_bf_str (vector_t tokens)
                        tok_to_str (curr_tok.type));
                continue;
             }
-         string_push (&bf, bf_c);
+         dstr_putc (&bf, bf_c);
       }
 
    return bf;

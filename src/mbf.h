@@ -1,8 +1,8 @@
 #ifndef MBF_H
 #define MBF_H
 
-#include "str.h"
+#include "dstr.h"
 
-string_t mbf_preprocess (const char *program);
+dstr_t mbf_preprocess (const char *program);
 
 #endif /*  MBF_H */

@@ -2,23 +2,23 @@
 #include <stdio.h>
 #include <string.h>
 
+#define DSTR_IMPL
 #include "mbf.h"
 
 unsigned int tests_run    = 0;
 unsigned int tests_failed = 0;
 
 /* preprocess_eq */
-#define peq(mbf, str)                                                         \
+#define peq(mbf, test_str)                                                    \
    do                                                                         \
       {                                                                       \
-         string_t exp = mbf_preprocess (mbf);                                 \
-         /*expect_streq (exp.elems, str);*/                                   \
+         dstr_t exp = mbf_preprocess (mbf);                                   \
          tests_run++;                                                         \
-         if (strcmp (exp.elems, str) != 0)                                    \
+         if (strcmp (exp.str, test_str) != 0)                                 \
             {                                                                 \
                fprintf (stderr, "[FAILED:%u] '%s' -/-> '%s',", __LINE__, mbf, \
-                        str);                                                 \
-               fprintf (stderr, "  actual: '%s'\n", exp.elems);               \
+                        test_str);                                                 \
+               fprintf (stderr, "  actual: '%s'\n", exp.str);                 \
                tests_failed++;                                                \
             }                                                                 \
       }                                                                       \
