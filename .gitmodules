@@ -1,0 +1,3 @@
+[submodule "vendors/dstr"]
+	path = vendors/dstr
+	url = https://github.com/vs-123/dstr.git
