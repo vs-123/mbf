@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bf.h"
-#include "mbf.h"
-
 #define DSTR_IMPL
 #include "dstr.h"
+
+#include "bf.h"
+#include "mbf.h"
 
 #define bool int
 #define true 1
