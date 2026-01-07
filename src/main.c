@@ -82,9 +82,9 @@ void print_help(char *mbf_name)
 
 void parse_args(unsigned int argc, char **argv, opts_t *mbf_opts)
 {
-   mbf_opts->skip_expansion                = false;
-   mbf_opts->out_path                   = NULL;
-   bool got_program                        = false;
+   mbf_opts->skip_expansion = false;
+   mbf_opts->out_path       = NULL;
+   bool got_program         = false;
 
    if (argc < 2) {
       print_help(argv[0]);
@@ -104,7 +104,7 @@ void parse_args(unsigned int argc, char **argv, opts_t *mbf_opts)
          }
          i++;
          mbf_opts->skip_expansion = false;
-         mbf_opts->out_path    = argv[i];
+         mbf_opts->out_path       = argv[i];
       } else if (strcmp(arg, "-ne") == 0 || strcmp(arg, "-bf") == 0 ||
                  strcmp(arg, "--no-expand") == 0) {
          mbf_opts->skip_expansion = true;
@@ -117,7 +117,7 @@ void parse_args(unsigned int argc, char **argv, opts_t *mbf_opts)
          exit(1);
       } else {
          mbf_opts->src_path = arg;
-         got_program            = true;
+         got_program        = true;
       }
    }
    if (!got_program) {
@@ -145,40 +145,46 @@ bool read_file_to_dstr(const char *path, dstr_t *out)
    return true;
 }
 
+int write_to_file(const char *path, const char *content)
+{
+   FILE *out = fopen(path, "w");
+   if (!out) {
+      fprintf(stderr, "[ERROR] Could not write to '%s'\n", path);
+      return 1;
+   }
+   fprintf(out, "%s", content);
+   fclose(out);
+   printf("[SUCCESS] Written to %s\n", path);
+   return 0;
+}
+
 int run_mbf(opts_t *opts)
 {
    dstr_t program = dstr_new();
+   
    if (!read_file_to_dstr(opts->src_path, &program)) {
       fprintf(stderr, "[ERROR] Could not open '%s'\n", opts->src_path);
       return 1;
    }
 
-   if (!opts->skip_expansion) {
-      dstr_t expanded = mbf_preprocess(program.str);
+   dstr_t expanded   = {0};
+   char *code_to_run = program.str;
 
-      if (opts->out_path != NULL) {
-         FILE *out = fopen(opts->out_path, "w");
-         if (!out) {
-            fprintf(
-               stderr,
-               "[ERROR] Could not write to '%s'\n",
-               opts->out_path
-            );
-            dstr_free(&expanded);
-            dstr_free(&program);
-            return 1;
-         }
-         fprintf(out, "%s", expanded.str);
-         fclose(out);
-         printf("[SUCCESS] Written to %s\n", opts->out_path);
-      } else {
-         mbf_exec_bf(expanded.str);
-      }
-      dstr_free(&expanded);
-   } else {
-      mbf_exec_bf(program.str);
+   if (!opts->skip_expansion) {
+      expanded    = mbf_preprocess(program.str);
+      code_to_run = expanded.str;
    }
 
+   if (opts->out_path != NULL) {
+      int status = write_to_file(opts->out_path, code_to_run);
+      dstr_free(&expanded);
+      dstr_free(&program);
+      return status;
+   }
+
+   mbf_exec_bf(code_to_run);
+
+   dstr_free(&expanded);
    dstr_free(&program);
    return 0;
 }
