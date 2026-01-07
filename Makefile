@@ -8,7 +8,7 @@ TEST_PROGRAM=$(BUILD)/$(PROGRAM)_test
 build: $(SRC)
 	@ echo "[INFO] building..."
 	@ mkdir -p $(BUILD)
-	@ $(CC) -o $(BUILD_PROGRAM) $(OPTS) -O3 $(SRC) src/main.c
+	@ $(CC) -o $(BUILD_PROGRAM) -Iinclude/ $(OPTS) -O3 $(SRC) src/main.c
 	@ echo "[SUCCESS] successfully built!"
 
 b: build
@@ -16,7 +16,7 @@ b: build
 test: $(SRC)
 	@ echo "[INFO] building tests..."
 	@ mkdir -p $(BUILD)
-	@ $(CC) -o $(TEST_PROGRAM) $(OPTS) -O2 -g $(SRC) src/test.c
+	@ $(CC) -o $(TEST_PROGRAM) -Iinclude/ $(OPTS) -O2 -g $(SRC) src/test.c
 	@ echo "[INFO] running tests..."
 	@ exec $(TEST_PROGRAM)
 
