@@ -14,20 +14,19 @@
 
 typedef struct
 {
-   const char *program_file;
-   bool can_expand;
-   bool should_save_expansion_to_file;
-   const char *output_file;
-} mbf_opts_t;
+   bool skip_expansion;
+   const char *src_path;
+   const char *out_path;
+} opts_t;
 
 void print_help(char *mbf_name);
-void parse_args(unsigned int argc, char **argv, mbf_opts_t *mbf_opts);
+void parse_args(unsigned int argc, char **argv, opts_t *mbf_opts);
 bool read_file_to_dstr(const char *path, dstr_t *out);
-int run_mbf(mbf_opts_t *opts);
+int run_mbf(opts_t *opts);
 
 int main(int argc, char **argv)
 {
-   mbf_opts_t opts = {0};
+   opts_t opts = {0};
    parse_args(argc, argv, &opts);
 
    int exit_code = run_mbf(&opts);
@@ -81,10 +80,10 @@ void print_help(char *mbf_name)
    );
 }
 
-void parse_args(unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
+void parse_args(unsigned int argc, char **argv, opts_t *mbf_opts)
 {
-   mbf_opts->should_save_expansion_to_file = false;
-   mbf_opts->can_expand                    = true;
+   mbf_opts->skip_expansion                = false;
+   mbf_opts->out_path                   = NULL;
    bool got_program                        = false;
 
    if (argc < 2) {
@@ -104,12 +103,11 @@ void parse_args(unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
             exit(0);
          }
          i++;
-         mbf_opts->can_expand                    = true;
-         mbf_opts->should_save_expansion_to_file = true;
-         mbf_opts->output_file                   = argv[i];
+         mbf_opts->skip_expansion = false;
+         mbf_opts->out_path    = argv[i];
       } else if (strcmp(arg, "-ne") == 0 || strcmp(arg, "-bf") == 0 ||
                  strcmp(arg, "--no-expand") == 0) {
-         mbf_opts->can_expand = false;
+         mbf_opts->skip_expansion = true;
       } else if (strncmp(arg, "-", 1) == 0) {
          fprintf(
             stderr,
@@ -118,7 +116,7 @@ void parse_args(unsigned int argc, char **argv, mbf_opts_t *mbf_opts)
          );
          exit(1);
       } else {
-         mbf_opts->program_file = arg;
+         mbf_opts->src_path = arg;
          got_program            = true;
       }
    }
@@ -147,24 +145,24 @@ bool read_file_to_dstr(const char *path, dstr_t *out)
    return true;
 }
 
-int run_mbf(mbf_opts_t *opts)
+int run_mbf(opts_t *opts)
 {
    dstr_t program = dstr_new();
-   if (!read_file_to_dstr(opts->program_file, &program)) {
-      fprintf(stderr, "[ERROR] Could not open '%s'\n", opts->program_file);
+   if (!read_file_to_dstr(opts->src_path, &program)) {
+      fprintf(stderr, "[ERROR] Could not open '%s'\n", opts->src_path);
       return 1;
    }
 
-   if (opts->can_expand) {
+   if (!opts->skip_expansion) {
       dstr_t expanded = mbf_preprocess(program.str);
 
-      if (opts->should_save_expansion_to_file) {
-         FILE *out = fopen(opts->output_file, "w");
+      if (opts->out_path != NULL) {
+         FILE *out = fopen(opts->out_path, "w");
          if (!out) {
             fprintf(
                stderr,
                "[ERROR] Could not write to '%s'\n",
-               opts->output_file
+               opts->out_path
             );
             dstr_free(&expanded);
             dstr_free(&program);
@@ -172,7 +170,7 @@ int run_mbf(mbf_opts_t *opts)
          }
          fprintf(out, "%s", expanded.str);
          fclose(out);
-         printf("[SUCCESS] Written to %s\n", opts->output_file);
+         printf("[SUCCESS] Written to %s\n", opts->out_path);
       } else {
          mbf_exec_bf(expanded.str);
       }
