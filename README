@@ -70,7 +70,7 @@
 
    o   Prerequisites:
           o   GNU Make
-          o   C compiler
+          o   C99 Compiler
    
    o   Clone this repository into =mbf/= and =cd= into it:
           % git clone --recursive https://github.com/vs-123/mbf.git
@@ -78,7 +78,7 @@
           ./ ../ mbf/
           % cd mbf/
    
-   o   Ensure you set =CC= environment variable in case =make= fails to find your C compiler.
+   o   Manually set =CC= variable in case =make= fails to find your C compiler.
    
    o   Use =make= to build the project:
           % pwd
