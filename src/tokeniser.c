@@ -86,7 +86,7 @@ void tokenise_ident(tokeniser_t *tokeniser)
 
    dstr_free(&eaten_alnum);
 
-   vector_push_elem(&tokeniser->tokens, &token);
+   token_vector_t_push(&tokeniser->tokens, token);
 }
 
 void tokenise_num(tokeniser_t *tokeniser)
@@ -113,7 +113,7 @@ void tokenise_num(tokeniser_t *tokeniser)
       .lc        = lc,
    };
 
-   vector_push_elem(&tokeniser->tokens, &token);
+   token_vector_t_push(&tokeniser->tokens, token);
 }
 
 char *tok_to_str(token_type_t tok_type)
@@ -127,12 +127,12 @@ char *tok_to_str(token_type_t tok_type)
    }
 }
 
-dstr_t tokens_to_bf_str(vector_t tokens)
+dstr_t tokens_to_bf_str(token_vector_t tokens)
 {
    token_t curr_tok = {0};
    dstr_t bf        = dstr_new();
    for (unsigned int i = 0; i < tokens.size; i++) {
-      curr_tok  = *(token_t *)vector_at(&tokens, i);
+      curr_tok  = *token_vector_t_at(&tokens, i);
       char bf_c = ' ';
       switch (curr_tok.type) {
          /* Classic BF */
@@ -181,12 +181,12 @@ dstr_t tokens_to_bf_str(vector_t tokens)
    return bf;
 }
 
-void print_tokens(vector_t tokens)
+void print_tokens(token_vector_t tokens)
 {
    puts("Printing Tokens");
    puts("===============");
    for (unsigned int i = 0; i < tokens.size; i++) {
-      token_t *curr_tok = (token_t *)vector_at(&tokens, i);
+      token_t *curr_tok = (token_t *)token_vector_t_at(&tokens, i);
       token_type_t tt_t = curr_tok->type;
       const char *tt    = tok_to_str(tt_t);
 
@@ -205,7 +205,7 @@ void print_tokens(vector_t tokens)
 
 void mbf_tokenise(tokeniser_t *tokeniser)
 {
-   tokeniser->tokens = new_vector(32, sizeof(token_t));
+   tokeniser->tokens = token_vector_t_new(32);
    char current_char = '\1';
 
    while (current_char != '\0') {
@@ -230,7 +230,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .type = Token_LCurly,
             .lc   = get_line_col(tokeniser),
          };
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '}': {
@@ -238,7 +238,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .type = Token_RCurly,
             .lc   = get_line_col(tokeniser),
          };
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '+': {
@@ -246,7 +246,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .type = Token_Plus,
             .lc   = get_line_col(tokeniser),
          };
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '-': {
@@ -255,7 +255,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '<': {
@@ -264,7 +264,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '>': {
@@ -273,7 +273,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '[': {
@@ -282,7 +282,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case ']': {
@@ -291,7 +291,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '.': {
@@ -300,7 +300,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case ',': {
@@ -309,7 +309,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case ';': {
@@ -318,7 +318,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       case '\0': {
@@ -327,7 +327,7 @@ void mbf_tokenise(tokeniser_t *tokeniser)
             .lc   = get_line_col(tokeniser),
          };
 
-         vector_push_elem(&tokeniser->tokens, &tok);
+         token_vector_t_push(&tokeniser->tokens, tok);
       } break;
 
       default:
@@ -355,12 +355,12 @@ void tokeniser_free(tokeniser_t *tokeniser)
 {
 
    for (unsigned int i = 0; i < tokeniser->tokens.size; i++) {
-      token_t *tok = (token_t *)vector_at(&tokeniser->tokens, i);
+      token_t *tok = (token_t *)token_vector_t_at(&tokeniser->tokens, i);
       if (tok->type == Token_Ident && tok->value.chars) {
          free((void *)tok->value.chars);
          tok->value.chars = NULL;
       }
    }
-   vector_free(&tokeniser->tokens);
+   token_vector_t_free(&tokeniser->tokens);
    tokeniser->prog_idx = 0;
 }

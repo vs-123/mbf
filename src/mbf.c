@@ -27,28 +27,23 @@ static void cry(const token_t *token, const char *format, ...)
    exit(1);
 }
 
-/* [PARAMS] */
-/*    o   tokens -- vector_t of token_t's */
-void mbf_expand_number_prefixes(vector_t *tokens)
+void mbf_expand_number_prefixes(token_vector_t *tokens)
 {
    assert(tokens->size > 0 && "need at least 1 token");
-   assert(
-      tokens->elem_size == sizeof(token_t) && "doesn't smell like a token_t..."
-   );
 
    /* we don't care about anything else, */
    /* except for numbers and the token that */
    /* follows it. */
 
-   vector_t expanded_tokens = new_vector(tokens->size, sizeof(token_t));
+   token_vector_t expanded_tokens = token_vector_t_new(tokens->size);
 
    unsigned int i = 0;
    while (i < tokens->size) {
-      token_t curr_tok = *(token_t *)vector_at(tokens, i);
+      token_t curr_tok = *token_vector_t_at(tokens, i);
 
       if (curr_tok.type == Token_Number) {
 
-         token_t next_tok   = *(token_t *)vector_at(tokens, i + 1);
+         token_t next_tok   = *token_vector_t_at(tokens, i + 1);
          unsigned int times = curr_tok.value.num;
 
          if (next_tok.type != Token_Plus && next_tok.type != Token_Minus &&
@@ -61,22 +56,22 @@ void mbf_expand_number_prefixes(vector_t *tokens)
          }
 
          i++;
-         curr_tok = *(token_t *)vector_at(tokens, i);
+         curr_tok = *token_vector_t_at(tokens, i);
 
          /* curr_tok is now either one of + - < > */
          for (unsigned int i = 0; i < times; i++) {
-            vector_push_elem(&expanded_tokens, &curr_tok);
+            token_vector_t_push(&expanded_tokens, curr_tok);
          }
       } else {
-         vector_push_elem(&expanded_tokens, &curr_tok);
+         token_vector_t_push(&expanded_tokens, curr_tok);
       }
 
       i++;
    }
 
-   vector_t old = *tokens;
+   token_vector_t old = *tokens;
    *tokens      = expanded_tokens;
-   vector_free(&old);
+   token_vector_t_free(&old);
 }
 
 dstr_t mbf_preprocess(const char *program)

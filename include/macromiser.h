@@ -13,18 +13,20 @@ typedef struct
    /* instead of storing the macro name, */
    /* we'll store its hash */
    unsigned int hash;
-   vector_t body; /* vector_t of token_t's */
+   token_vector_t body;
 } macro_t;
 
-macro_t new_macro (const char *macro_name, vector_t body);
+DECLARE_VECTOR(macro_t, macro_vector_t)
+
+macro_t new_macro (const char *macro_name, token_vector_t body);
 
 typedef struct
 {
-   vector_t tokens; /* vector_t of tokens_t's */
-   vector_t macros; /* vector_t of macro_t's */
+   token_vector_t tokens;
+   macro_vector_t macros;
 } macromiser_t;
 
-macromiser_t new_macromiser (vector_t tokens);
+macromiser_t new_macromiser (token_vector_t tokens);
 
 /* collects the macros and removes macro definitions from =tokens= */
 void macromiser_collect_macros (macromiser_t *);

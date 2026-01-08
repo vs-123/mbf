@@ -56,18 +56,20 @@ typedef struct
 
 void token_free (token_t *);
 
-void token_free_wrapper (void *p);
+void token_free_wrapper(void *p);
+
+DECLARE_VECTOR(token_t, token_vector_t)
 
 typedef struct
 {
    const char *program;
    unsigned int prog_idx;
-   vector_t tokens; /* vector_t of token_t's */
+   token_vector_t tokens;
 } tokeniser_t;
 
 char *tok_to_str (token_type_t tok);
-void print_tokens (vector_t tokens);
-dstr_t tokens_to_bf_str (vector_t tokens);
+void print_tokens (token_vector_t tokens);
+dstr_t tokens_to_bf_str (token_vector_t tokens);
 
 void mbf_tokenise (tokeniser_t *tokeniser);
 
