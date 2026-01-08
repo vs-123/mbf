@@ -23,16 +23,12 @@ void vector_push_elem(vector_t *this, void *elem)
    /* case 1: size >= capacity */
    if (this->size >= this->capacity) {
       this->capacity *= 2;
-      unsigned int elem_size = this->elem_size;
-      void *new_elems        = malloc(elem_size * this->capacity);
-      memmove(new_elems, this->elems, this->size * this->elem_size);
-      free(this->elems);
-      this->elems = new_elems;
+      this->elems = realloc(this->elems,  this->capacity * this->elem_size);
    }
 
    /* case 2: size < capacity */
    void *dest = (char *)this->elems + this->size * this->elem_size;
-   memmove(dest, elem, this->elem_size);
+   memcpy(dest, elem, this->elem_size);
    this->size++;
 }
 
