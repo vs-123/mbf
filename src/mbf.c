@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "macromiser_t.h"
-#include "tokeniser_t.h"
+#include "macromiser.h"
+#include "tokeniser.h"
 
 static void cry(const token_t *token, const char *format, ...)
 {

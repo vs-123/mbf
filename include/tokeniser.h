@@ -1,5 +1,5 @@
-#ifndef TOKENISER_T_H
-#define TOKENISER_T_H
+#ifndef TOKENISER_H
+#define TOKENISER_H
 
 #include "dstr.h"
 #include "vector.h"
@@ -73,4 +73,4 @@ void mbf_tokenise (tokeniser_t *tokeniser);
 
 void tokeniser_free (tokeniser_t *);
 
-#endif /* TOKENISER_T_H */
+#endif /* TOKENISER_H */

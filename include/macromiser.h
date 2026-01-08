@@ -1,7 +1,7 @@
-#ifndef MACROMISER_T_H
-#define MACROMISER_T_H
+#ifndef MACROMISER_H
+#define MACROMISER_H
 
-#include "tokeniser_t.h"
+#include "tokeniser.h"
 #include "vector.h"
 
 #define bool int
@@ -35,4 +35,4 @@ bool macromiser_expand_macros (macromiser_t *m, unsigned int *expansion_stack,
 
 void macromiser_free (macromiser_t *);
 
-#endif /* MACROMISER_T_H */
+#endif /* MACROMISER_H */

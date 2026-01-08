@@ -1,10 +1,10 @@
-#include "macromiser_t.h"
+#include "macromiser.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "tokeniser_t.h"
+#include "tokeniser.h"
 #include "util.h"
 
 #define bool int
