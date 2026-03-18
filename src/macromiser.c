@@ -45,46 +45,11 @@ replace_tokens (token_vector_t *dst, token_vector_t *src)
 {
    token_vector_t old = *dst;
    *dst               = *src;
-   free(old.elems);
+   free (old.elems);
    /* TODO token_vector_t_free (&old); */
 }
 
 /* impl */
-
-macro_t
-new_macro (const char *macro_name, token_vector_t body)
-{
-   macro_t m = {
-      .hash = str_hash (macro_name),
-      .body = body,
-   };
-   return m;
-}
-
-macromiser_t
-new_macromiser (token_vector_t tokens)
-{
-   macromiser_t m = { 0 };
-
-   m.tokens = tokens;
-
-   return m;
-}
-
-void
-macromiser_free (macromiser_t *m)
-{
-   for (unsigned int i = 0; i < m->macros.count; i++)
-      {
-         macro_t *mm = &m->macros.elems[i];
-         free_token_heap_fields_vector (&mm->body);
-         free(mm->body.elems);
-      }
-
-   free_token_heap_fields_vector (&m->tokens);
-   free(m->macros.elems);
-   free(m->tokens.elems);
-}
 
 void
 macromiser_collect_macros (macromiser_t *m)
@@ -113,7 +78,7 @@ macromiser_collect_macros (macromiser_t *m)
                      idx += 2;
                      while (idx < prog_size)
                         {
-                           token_t t = m->tokens.elems[ idx];
+                           token_t t = m->tokens.elems[idx];
                            if (t.type == Token_RCurly)
                               {
                                  idx++;
@@ -123,7 +88,7 @@ macromiser_collect_macros (macromiser_t *m)
                               {
                                  cry (&t, "expected '}', found EOF.");
                               }
-                           DAPPEND(macro_body, t);
+                           DAPPEND (macro_body, t);
                            idx++;
                         }
                      if (curr_tok.type == Token_EOF)
@@ -255,7 +220,7 @@ macromiser_expand_macros (macromiser_t *m,
                           unsigned int *expansion_stack,
                           unsigned int *expansion_depth)
 {
-   token_vector_t expanded_tokens = {0};
+   token_vector_t expanded_tokens = { 0 };
    unsigned int before            = m->tokens.count;
 
    expand_tokens_into (&expanded_tokens,
@@ -268,4 +233,43 @@ macromiser_expand_macros (macromiser_t *m,
 
    /* consider "something was expanded" if size differs */
    return m->tokens.count != before;
+}
+
+/****************/
+/*  PUBLIC API  */
+/****************/
+
+macro_t
+new_macro (const char *macro_name, token_vector_t body)
+{
+   macro_t m = {
+      .hash = str_hash (macro_name),
+      .body = body,
+   };
+   return m;
+}
+
+macromiser_t
+new_macromiser (token_vector_t tokens)
+{
+   macromiser_t m = { 0 };
+
+   m.tokens = tokens;
+
+   return m;
+}
+
+void
+macromiser_free (macromiser_t *m)
+{
+   for (unsigned int i = 0; i < m->macros.count; i++)
+      {
+         macro_t *mm = &m->macros.elems[i];
+         free_token_heap_fields_vector (&mm->body);
+         free (mm->body.elems);
+      }
+
+   free_token_heap_fields_vector (&m->tokens);
+   free (m->macros.elems);
+   free (m->tokens.elems);
 }

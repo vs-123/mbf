@@ -20,24 +20,27 @@ typedef struct
    size_t capacity;
 } macro_vector_t;
 
-macro_t new_macro (const char *macro_name, token_vector_t body);
-
 typedef struct
 {
    token_vector_t tokens;
    macro_vector_t macros;
 } macromiser_t;
 
+macro_t new_macro (const char *macro_name, token_vector_t body);
 macromiser_t new_macromiser (token_vector_t tokens);
+void macromiser_free (macromiser_t *);
 
-/* collects the macros and removes macro definitions from =tokens= */
-void macromiser_collect_macros (macromiser_t *);
+/**
+ * Collect and remove macro definitions from `tokens`
+ */
+void macromiser_collect_macros (macromiser_t *m);
 
-/* expands macros into =tokens= */
+/**
+ * Expand macros into `tokens`
+ * Returns true if expansion occurred, false otherwise
+ */
 bool macromiser_expand_macros (macromiser_t *m,
                                unsigned int *expansion_stack,
                                unsigned int *expansion_depth);
-
-void macromiser_free (macromiser_t *);
 
 #endif /* MACROMISER_H */
