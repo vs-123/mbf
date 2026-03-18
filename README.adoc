@@ -10,43 +10,43 @@
 
 [source,bf]
 ----
-   # hello_world.mbf
-   # hello macro
-   hello {
-      > 8+ [< 9+ > -] < .
-      > 4+ [< 7+ > -] > +.
-      7+ . .
-      3+ .
-      >> 6+ [< 7+ >-] < ++.
-      12- .
-      > 6+ [< 9+ >-] < + .
-      <.
-      3+ .
-      6- .
-      8- .
-      >>> 4+ [< 8+ >-] <+ .
-   }
+# hello_world.mbf
+# hello macro
+hello {
+   > 8+ [< 9+ > -] < .
+   > 4+ [< 7+ > -] > +.
+   7+ . .
+   3+ .
+   >> 6+ [< 7+ >-] < ++.
+   12- .
+   > 6+ [< 9+ >-] < + .
+   <.
+   3+ .
+   6- .
+   8- .
+   >>> 4+ [< 8+ >-] <+ .
+}
 
-   # call hello
-   hello;
+# call hello
+hello;
 ----
 
 == USAGE
 
 [source,sh]
 ----
-   %  # use `mbf -h` for help
-   
-   %  mbf ./hello_world.mbf
-   Hello, World!
+%  # use `mbf -h` for help
 
-   %  mbf -E expanded.bf hello_world.mbf
-   [SUCCESS] file was successfully written!
-   
-   %  cat expanded.bf
-   >++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.
+%  mbf ./hello_world.mbf
+Hello, World!
 
-   % # see `examples/` for more examples
+%  mbf -E expanded.bf hello_world.mbf
+[SUCCESS] file was successfully written!
+
+%  cat expanded.bf
+>++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.
+
+% # see `examples/` for more examples
 ----
 
 == FEATURES
@@ -65,52 +65,48 @@
 == BUILD INSTRUCTIONS
 
 * Prerequisites {em} GNU Make & a C99 Compiler
-   
+
 * Clone this repository into `mbf/` and `cd` into it:
 [source,sh]
 ----
-   %  git clone --recursive https://github.com/vs-123/mbf.git
-   %  ls
-   ./ ../ mbf/
-   %  cd mbf/
+%  git clone --recursive https://github.com/vs-123/mbf.git
+%  ls
+./ ../ mbf/
+%  cd mbf/
 ----
-   
+
 * Use `make` to build the project:
 [source,sh]
 ----
-   %  pwd
-   ~/mbf
-   
-   %  make build
-   [INFO] building...
-   [SUCCESS] successfully built!
-   
-   %  ls build/ && cd $_
-   ./ ../ mbf*
-   
-   %  ./mbf ../examples/hello_world.mbf
-   Hello, World!
+%  pwd
+~/mbf
+
+%  make build
+[INFO] building...
+[SUCCESS] successfully built!
+
+%  ls build/ && cd $_
+./ ../ mbf*
+
+%  ./mbf ../examples/hello_world.mbf
+Hello, World!
 ----
-   
+
 * To run tests, use `make test`:
 [source,sh]
 ----
-   %  make test
-   [INFO] building tests...
-   [INFO] running tests...
+%  make test
+[INFO] building tests...
+[INFO] running tests...
 ----
   
 * To perform a clean operation, use =make clean=:
 [source,sh]
 ----
-   %  make clean
-   [INFO] cleaning...
-   [SUCCESS] cleaned successfully!
+%  make clean
+[INFO] cleaning...
+[SUCCESS] cleaned successfully!
 ----
-   
-== EXAMPLES
-
-You may find more examples in `examples/` directory.
 
 == LICENSE
 
