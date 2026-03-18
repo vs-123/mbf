@@ -46,7 +46,7 @@ Hello, World!
 %  cat expanded.bf
 >++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.
 
-% # see `examples/` for more examples
+%  # see `examples/` for more examples
 ----
 
 == FEATURES
@@ -64,18 +64,49 @@ Hello, World!
 
 == BUILD INSTRUCTIONS
 
-* Prerequisites {em} GNU Make & a C99 Compiler
 
 * Clone this repository into `mbf/` and `cd` into it:
++
 [source,sh]
 ----
 %  git clone --recursive https://github.com/vs-123/mbf.git
 %  ls
-./ ../ mbf/
+./  ../  mbf/
 %  cd mbf/
 ----
 
+=== CMake Method
+
+* Create a `build/` directory and `cd` into it:
++
+[source,sh]
+----
+%  mkdir -p build
+%  cd build
+%  ls
+./  ../
+----
+
+* Use CMake to generate buildsystem files and then build the project:
++
+[source,sh]
+----
+%  cmake ..
+%  cmake --build .
+----
+
+* You may now use the generated binary
++
+[source,sh]
+----
+%  ls
+./  ../  mbf*  compile_commands.json
+----
+
+=== Makefile Method
+
 * Use `make` to build the project:
++
 [source,sh]
 ----
 %  pwd
@@ -92,7 +123,8 @@ Hello, World!
 Hello, World!
 ----
 
-* To run tests, use `make test`:
+* Use `make test` to run tests: (optional)
++
 [source,sh]
 ----
 %  make test
@@ -100,7 +132,8 @@ Hello, World!
 [INFO] running tests...
 ----
   
-* To perform a clean operation, use =make clean=:
+* To perform a clean operation, use `make clean`:
++
 [source,sh]
 ----
 %  make clean

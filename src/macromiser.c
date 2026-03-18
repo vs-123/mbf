@@ -3,13 +3,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "tokeniser.h"
 #include "util.h"
-
-#define bool int
-#define true 1
-#define false 0
 
 IMPLEMENT_VECTOR (token_t, token_vector_t)
 IMPLEMENT_VECTOR (macro_t, macro_vector_t)

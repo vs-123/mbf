@@ -45,7 +45,7 @@ print_help (char *mbf_name)
            "~=~=~=~=~=\n"
            "|| DESC ||\n"
            "~=~=~=~=~=\n"
-           "   A compiler/interpreter for MBF (Macro BF).\n"
+           "   A transpiler/interpreter for MBF (Macro BF).\n"
            "\n"
            "~=~=~=~=~=~\n"
            "|| USAGE ||\n"
@@ -108,7 +108,7 @@ parse_args (unsigned int argc, char **argv, opts_t *mbf_opts)
                if (i + 1 >= argc)
                   {
                      fprintf (stderr,
-                              "[ERROR] expected output file after %s.\n",
+                              "[ERROR] EXPECTED OUTPUT FILE AFTER %s.\n",
                               arg);
                      exit (0);
                   }
