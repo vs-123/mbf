@@ -1,0 +1,121 @@
+:em: {sp}--{sp}
+
+= MBF
+
+`mbf` is a modified implementation of the esoteric programming language link:https://en.wikipedia.org/wiki/Brainfuck[Brainfuck], with the addition of macros.
+
+`mbf` is an acronym that stands for "**M**acro **B**rain**f**uck".
+
+== HELLO WORLD
+
+[source,bf]
+----
+   # hello_world.mbf
+   # hello macro
+   hello {
+      > 8+ [< 9+ > -] < .
+      > 4+ [< 7+ > -] > +.
+      7+ . .
+      3+ .
+      >> 6+ [< 7+ >-] < ++.
+      12- .
+      > 6+ [< 9+ >-] < + .
+      <.
+      3+ .
+      6- .
+      8- .
+      >>> 4+ [< 8+ >-] <+ .
+   }
+
+   # call hello
+   hello;
+----
+
+== USAGE
+
+[source,sh]
+----
+   %  # use `mbf -h` for help
+   
+   %  mbf ./hello_world.mbf
+   Hello, World!
+
+   %  mbf -E expanded.bf hello_world.mbf
+   [SUCCESS] file was successfully written!
+   
+   %  cat expanded.bf
+   >++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.
+
+   % # see `examples/` for more examples
+----
+
+== FEATURES
+
+* Macros
+* Strict superset of BF
+* 100% compatible with ordinary BF
+* Includes an interpreter to execute both MBF & BF code
+* Error messages
+* Supports comments
+* Macros can call other macros
+* Infinite cycle detection (see `examples/cycle.mbf`)
+* Lets you save expanded BF code with `-E` flag
+* Helpful `-h` / `--help` flag for help
+
+== BUILD INSTRUCTIONS
+
+* Prerequisites {em} GNU Make & a C99 Compiler
+   
+* Clone this repository into `mbf/` and `cd` into it:
+[source,sh]
+----
+   %  git clone --recursive https://github.com/vs-123/mbf.git
+   %  ls
+   ./ ../ mbf/
+   %  cd mbf/
+----
+   
+* Use `make` to build the project:
+[source,sh]
+----
+   %  pwd
+   ~/mbf
+   
+   %  make build
+   [INFO] building...
+   [SUCCESS] successfully built!
+   
+   %  ls build/ && cd $_
+   ./ ../ mbf*
+   
+   %  ./mbf ../examples/hello_world.mbf
+   Hello, World!
+----
+   
+* To run tests, use `make test`:
+[source,sh]
+----
+   %  make test
+   [INFO] building tests...
+   [INFO] running tests...
+----
+  
+* To perform a clean operation, use =make clean=:
+[source,sh]
+----
+   %  make clean
+   [INFO] cleaning...
+   [SUCCESS] cleaned successfully!
+----
+   
+== EXAMPLES
+
+You may find more examples in `examples/` directory.
+
+== LICENSE
+
+This program is licensed under the *GNU Affero General Public License version 3.0 or later*.
+
+*NO WARRANTY PROVIDED*
+
+For full terms, see `LICENSE` file or visit *https://www.gnu.org/licenses/agpl-3.0.html*.
