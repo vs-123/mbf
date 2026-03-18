@@ -2,7 +2,6 @@
 #define TOKENISER_H
 
 #include "dstr.h"
-#include "vector.h"
 
 typedef struct
 {
@@ -58,7 +57,11 @@ void token_free (token_t *);
 
 void token_free_wrapper(void *p);
 
-DECLARE_VECTOR(token_t, token_vector_t)
+typedef struct {
+   token_t *elems;
+   size_t count;
+   size_t capacity;
+} token_vector_t;
 
 typedef struct
 {

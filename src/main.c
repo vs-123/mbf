@@ -9,7 +9,9 @@
 #include "mbf.h"
 
 #define bool int
+
 #define true 1
+
 #define false 0
 
 typedef struct
@@ -19,8 +21,8 @@ typedef struct
    const char *out_path;
 } opts_t;
 
-void print_help (char *mbf_name);
 void parse_args (unsigned int argc, char **argv, opts_t *mbf_opts);
+void print_help (char *mbf_name);
 bool read_file_to_dstr (const char *path, dstr_t *out);
 int run_mbf (opts_t *opts);
 
@@ -45,35 +47,35 @@ print_help (char *mbf_name)
            "~=~=~=~=~=\n"
            "|| DESC ||\n"
            "~=~=~=~=~=\n"
-           "   A transpiler/interpreter for MBF (Macro BF).\n"
+           "   A TRANSPILER/INTERPRETER FOR MBF (MACRO BF).\n"
            "\n"
            "~=~=~=~=~=~\n"
            "|| USAGE ||\n"
            "~=~=~=~=~=~\n"
-           "   %% %s [OPTION] <input_file>\n"
+           "   %%  %s [OPTION] <input_file>\n"
            "\n"
            "~=~=~=~=~=~=~\n"
            "|| OPTIONS ||\n"
            "~=~=~=~=~=~=~\n"
-           "   o   -h/--help                  --- print help\n"
-           "   o   -E/--expand <output_file>  --- expand & write to file; do "
-           "not interpret.\n"
-           "   o   -ne/--no-expand            --- do not expand; interpret "
-           "as-is\n"
-           "   o   -bf                        --- interpret as BF\n"
+           "   *   -h/--help                  --- PRINT HELP\n"
+           "   *   -E/--expand <output_file>  --- EXPAND & WRITE TO FILE; DO "
+           "NOT INTERPRET.\n"
+           "   *   -ne/--no-expand            --- DO NOT EXPAND; INTERPRET "
+           "AS-IS\n"
+           "   *   -bf                        --- INTERPRET AS BF\n"
            "\n"
            "~=~=~=~=~=~=~\n"
            "|| EXAMPLE ||\n"
            "~=~=~=~=~=~=~\n"
-           "   %% %s ./hello_world.mbf\n"
-           "   %% %s -E output.bf ./hello_world.mbf\n"
-           "   %% %s -bf ./output.bf\n"
+           "   %%  %s ./hello_world.mbf\n"
+           "   %%  %s -E output.bf ./hello_world.mbf\n"
+           "   %%  %s -bf ./output.bf\n"
            "\n"
            "~=~=~=~=~=~=~\n"
            "|| LICENSE ||\n"
            "~=~=~=~=~=~=~\n"
-           "   This program is licensed under AGPLv3-or-later. No warranty.\n"
-           "   See `LICENSE` file for full terms.\n",
+           "   THIS PROGRAM IS LICENSED UNDER AGPLV3-OR-LATER. NO WARRANTY.\n"
+           "   SEE `LICENSE` FILE FOR FULL TERMS.\n",
            mbf_name,
            mbf_name,
            mbf_name,
@@ -124,7 +126,7 @@ parse_args (unsigned int argc, char **argv, opts_t *mbf_opts)
          else if (strncmp (arg, "-", 1) == 0)
             {
                fprintf (stderr,
-                        "[ERROR] unknown option '%s'. Use --help flag.\n",
+                        "[ERROR] UNKNOWN OPTION '%s'. USE --HELP FLAG.\n",
                         arg);
                exit (1);
             }
@@ -136,7 +138,7 @@ parse_args (unsigned int argc, char **argv, opts_t *mbf_opts)
       }
    if (!got_program)
       {
-         fprintf (stderr, "[ERROR] mbf program file was not provided.\n");
+         fprintf (stderr, "[ERROR] MBF PROGRAM FILE WAS NOT PROVIDED\n");
          exit (1);
       }
 }

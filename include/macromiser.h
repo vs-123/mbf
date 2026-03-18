@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 #include "tokeniser.h"
-#include "vector.h"
 
 typedef struct
 {
@@ -14,7 +13,12 @@ typedef struct
    token_vector_t body;
 } macro_t;
 
-DECLARE_VECTOR (macro_t, macro_vector_t)
+typedef struct
+{
+   macro_t *elems;
+   size_t count;
+   size_t capacity;
+} macro_vector_t;
 
 macro_t new_macro (const char *macro_name, token_vector_t body);
 
