@@ -1,26 +1,10 @@
-BasedOnStyle: LLVM
+BasedOnStyle: GNU
 IndentWidth: 3
+AlignConsecutiveAssignments: Consecutive
 InsertBraces: true
-AlignConsecutiveAssignments: true
-
-AllowShortBlocksOnASingleLine: Never
-AllowShortIfStatementsOnASingleLine: Never
-AllowShortLoopsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
-
-AlignAfterOpenBracket: BlockIndent
+ColumnLimit: 80
 BinPackArguments: false
+BinPackParameters: false
 AllowAllArgumentsOnNextLine: false
-ContinuationIndentWidth: 3
+AlignAfterOpenBracket: Align
 
-BreakBeforeBraces: Custom
-BraceWrapping:
-  AfterFunction: true
-  AfterControlStatement: false
-  AfterEnum: false
-  AfterStruct: true
-  AfterUnion: false
-  BeforeElse: false
-  BeforeCatch: false
-  IndentBraces: false
-  SplitEmptyFunction: true

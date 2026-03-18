@@ -1,12 +1,10 @@
 #ifndef MACROMISER_H
 #define MACROMISER_H
 
+#include <stdbool.h>
+
 #include "tokeniser.h"
 #include "vector.h"
-
-#define bool int
-#define true 1
-#define false 0
 
 typedef struct
 {
@@ -16,7 +14,7 @@ typedef struct
    token_vector_t body;
 } macro_t;
 
-DECLARE_VECTOR(macro_t, macro_vector_t)
+DECLARE_VECTOR (macro_t, macro_vector_t)
 
 macro_t new_macro (const char *macro_name, token_vector_t body);
 
@@ -32,7 +30,8 @@ macromiser_t new_macromiser (token_vector_t tokens);
 void macromiser_collect_macros (macromiser_t *);
 
 /* expands macros into =tokens= */
-bool macromiser_expand_macros (macromiser_t *m, unsigned int *expansion_stack,
+bool macromiser_expand_macros (macromiser_t *m,
+                               unsigned int *expansion_stack,
                                unsigned int *expansion_depth);
 
 void macromiser_free (macromiser_t *);
