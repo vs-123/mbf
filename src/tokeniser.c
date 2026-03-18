@@ -426,6 +426,6 @@ tokeniser_free (tokeniser_t *tokeniser)
                tok->value.chars = NULL;
             }
       }
-   /* TODO token_vector_t_free(&tokeniser->tokens); */
+   free(tokeniser->tokens.elems);
    tokeniser->prog_idx = 0;
 }

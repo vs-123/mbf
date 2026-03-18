@@ -45,6 +45,7 @@ replace_tokens (token_vector_t *dst, token_vector_t *src)
 {
    token_vector_t old = *dst;
    *dst               = *src;
+   free(old.elems);
    /* TODO token_vector_t_free (&old); */
 }
 
@@ -77,12 +78,12 @@ macromiser_free (macromiser_t *m)
       {
          macro_t *mm = &m->macros.elems[i];
          free_token_heap_fields_vector (&mm->body);
-         /* TODO token_vector_t_free (&mm->body); */
+         free(mm->body.elems);
       }
-   /* TODO macro_vector_t_free (&m->macros); */
 
    free_token_heap_fields_vector (&m->tokens);
-   /* TODO token_vector_t_free (&m->tokens); */
+   free(m->macros.elems);
+   free(m->tokens.elems);
 }
 
 void

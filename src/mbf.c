@@ -79,7 +79,7 @@ mbf_expand_number_prefixes (token_vector_t *tokens)
 
    token_vector_t old = *tokens;
    *tokens            = expanded_tokens;
-   /* TODO token_vector_t_free (&old); */
+   free(old.elems);
 }
 
 dstr_t
