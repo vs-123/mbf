@@ -38,9 +38,7 @@ get_line_col (const tokeniser_t *tokeniser)
    return lc;
 }
 
-/* tbh compilers yelling errors */
-/* feels like it's crying */
-/* and yup this throws an error */
+/* TBH COMPILERS YELLING ERRORS FEELS LIKE IT'S CRYING */
 static void
 cry (const tokeniser_t *tokeniser, const char *format, ...)
 {
@@ -62,9 +60,9 @@ cry (const tokeniser_t *tokeniser, const char *format, ...)
 void
 tokenise_ident (tokeniser_t *tokeniser)
 {
-   /* we're at an isalpha character right now */
-   /* eat up isalnum characters until we hit a non-isalnum char */
-   /* and then push it as a token to tokeniser->tokens */
+   /* WE'RE AT AN ISALPHA CHARACTER RIGHT NOW */
+   /* EAT UP ISALNUM CHARACTERS UNTIL WE HIT A NON-ISALNUM CHAR */
+   /* AND THEN PUSH IT AS A TOKEN TO TOKENISER->TOKENS */
 
    dstr_t eaten_alnum = dstr_new ();
    char curr_char     = '\1';
@@ -84,7 +82,7 @@ tokenise_ident (tokeniser_t *tokeniser)
    name[len] = '\0';
 
    token_t token = {
-      .type        = Token_Ident,
+      .type        = TOKEN_IDENT,
       .value.chars = name,
       .lc          = lc,
    };
@@ -115,7 +113,7 @@ tokenise_num (tokeniser_t *tokeniser)
    tokeniser->prog_idx--;
 
    token_t token = {
-      .type      = Token_Number,
+      .type      = TOKEN_NUMBER,
       .value.num = eaten_num,
       .lc        = lc,
    };
@@ -148,46 +146,46 @@ tokens_to_bf_str (token_vector_t tokens)
          switch (curr_tok.type)
             {
                /* Classic BF */
-            case Token_Plus:
+            case TOKEN_PLUS:
                {
                   bf_c = '+';
                }
                break;
-            case Token_Minus:
+            case TOKEN_MINUS:
                {
                   bf_c = '-';
                }
                break;
 
-            case Token_Left:
+            case TOKEN_LEFT:
                {
                   bf_c = '<';
                }
                break;
-            case Token_Right:
+            case TOKEN_RIGHT:
                {
                   bf_c = '>';
                }
                break;
 
-            case Token_LLoop:
+            case TOKEN_LLOOP:
                {
                   bf_c = '[';
                }
                break;
-            case Token_RLoop:
+            case TOKEN_RLOOP:
                {
                   bf_c = ']';
                }
                break;
 
-            case Token_Dot:
+            case TOKEN_DOT:
                {
                   bf_c = '.';
                }
                break;
 
-            case Token_Comma:
+            case TOKEN_COMMA:
                {
                   bf_c = ',';
                }
@@ -221,11 +219,11 @@ print_tokens (token_vector_t tokens)
          printf ("i: %d; ", i);
          printf ("type: %s; ", tt);
 
-         if (tt_t == Token_Number)
+         if (tt_t == TOKEN_NUMBER)
             {
                printf ("value.num: %d;", curr_tok->value.num);
             }
-         else if (tt_t == Token_Ident)
+         else if (tt_t == TOKEN_IDENT)
             {
                printf ("value.chars: %s;", curr_tok->value.chars);
             }
@@ -263,7 +261,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '{':
                {
                   token_t tok = {
-                     .type = Token_LCurly,
+                     .type = TOKEN_LCURLY,
                      .lc   = get_line_col (tokeniser),
                   };
                   DAPPEND (tokeniser->tokens, tok);
@@ -273,7 +271,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '}':
                {
                   token_t tok = {
-                     .type = Token_RCurly,
+                     .type = TOKEN_RCURLY,
                      .lc   = get_line_col (tokeniser),
                   };
                   DAPPEND (tokeniser->tokens, tok);
@@ -283,7 +281,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '+':
                {
                   token_t tok = {
-                     .type = Token_Plus,
+                     .type = TOKEN_PLUS,
                      .lc   = get_line_col (tokeniser),
                   };
                   DAPPEND (tokeniser->tokens, tok);
@@ -293,7 +291,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '-':
                {
                   token_t tok = {
-                     .type = Token_Minus,
+                     .type = TOKEN_MINUS,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -304,7 +302,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '<':
                {
                   token_t tok = {
-                     .type = Token_Left,
+                     .type = TOKEN_LEFT,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -315,7 +313,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '>':
                {
                   token_t tok = {
-                     .type = Token_Right,
+                     .type = TOKEN_RIGHT,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -326,7 +324,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '[':
                {
                   token_t tok = {
-                     .type = Token_LLoop,
+                     .type = TOKEN_LLOOP,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -337,7 +335,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case ']':
                {
                   token_t tok = {
-                     .type = Token_RLoop,
+                     .type = TOKEN_RLOOP,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -348,7 +346,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '.':
                {
                   token_t tok = {
-                     .type = Token_Dot,
+                     .type = TOKEN_DOT,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -359,7 +357,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case ',':
                {
                   token_t tok = {
-                     .type = Token_Comma,
+                     .type = TOKEN_COMMA,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -370,7 +368,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case ';':
                {
                   token_t tok = {
-                     .type = Token_Semicolon,
+                     .type = TOKEN_SEMICOLON,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -381,7 +379,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
             case '\0':
                {
                   token_t tok = {
-                     .type = Token_EOF,
+                     .type = TOKEN_EOF,
                      .lc   = get_line_col (tokeniser),
                   };
 
@@ -403,7 +401,7 @@ mbf_tokenise (tokeniser_t *tokeniser)
                else
                   {
                      cry (tokeniser,
-                          "found weird char `%c` (code: %d)\n",
+                          "FOUND UNEXPECTED CHARACTER `%c` (CODE -- %d)\n",
                           current_char,
                           (int)current_char);
                   }
@@ -420,12 +418,12 @@ tokeniser_free (tokeniser_t *tokeniser)
    for (unsigned int i = 0; i < tokeniser->tokens.count; i++)
       {
          token_t *tok = &tokeniser->tokens.elems[i];
-         if (tok->type == Token_Ident && tok->value.chars)
+         if (tok->type == TOKEN_IDENT && tok->value.chars)
             {
                free ((void *)tok->value.chars);
                tok->value.chars = NULL;
             }
       }
-   free(tokeniser->tokens.elems);
+   free (tokeniser->tokens.elems);
    tokeniser->prog_idx = 0;
 }

@@ -32,7 +32,7 @@ free_token_heap_fields_vector (token_vector_t *v)
    for (unsigned int i = 0; i < v->count; i++)
       {
          token_t *t = &v->elems[i];
-         if (t->type == Token_Ident && t->value.chars)
+         if (t->type == TOKEN_IDENT && t->value.chars)
             {
                free ((void *)t->value.chars);
                t->value.chars = NULL;
@@ -61,16 +61,16 @@ macromiser_collect_macros (macromiser_t *m)
    while (idx < prog_size)
       {
          token_t curr_tok = m->tokens.elems[idx];
-         if (curr_tok.type == Token_EOF)
+         if (curr_tok.type == TOKEN_EOF)
             {
                break;
             }
 
          token_t next_tok = m->tokens.elems[idx + 1];
-         if (curr_tok.type == Token_Ident)
+         if (curr_tok.type == TOKEN_IDENT)
             {
 
-               if (next_tok.type == Token_LCurly)
+               if (next_tok.type == TOKEN_LCURLY)
                   {
                      token_t *orig_ident       = &m->tokens.elems[idx];
                      const char *macro_name    = curr_tok.value.chars;
@@ -79,19 +79,19 @@ macromiser_collect_macros (macromiser_t *m)
                      while (idx < prog_size)
                         {
                            token_t t = m->tokens.elems[idx];
-                           if (t.type == Token_RCurly)
+                           if (t.type == TOKEN_RCURLY)
                               {
                                  idx++;
                                  break;
                               }
-                           if (t.type == Token_EOF)
+                           if (t.type == TOKEN_EOF)
                               {
                                  cry (&t, "expected '}', found EOF.");
                               }
                            DAPPEND (macro_body, t);
                            idx++;
                         }
-                     if (curr_tok.type == Token_EOF)
+                     if (curr_tok.type == TOKEN_EOF)
                         {
                            cry (&curr_tok,
                                 "expected ending curly brace }, "
@@ -109,7 +109,7 @@ macromiser_collect_macros (macromiser_t *m)
                   }
             }
 
-         /* at this point, curr_tok is either Token_RCurly or something else. */
+         /* at this point, curr_tok is either TOKEN_RCURLY Or something else. */
          DAPPEND (new_tokens, curr_tok);
          idx++;
       }
@@ -146,16 +146,16 @@ expand_tokens_into (token_vector_t *expanded_tokens,
    while (i < n)
       {
          token_t curr = tokens->elems[i];
-         if (curr.type == Token_EOF)
+         if (curr.type == TOKEN_EOF)
             {
                break;
             }
 
          token_t next = (i + 1 < n)
                             ? tokens->elems[i + 1]
-                            : (token_t){ .type = Token_EOF, .lc = curr.lc };
+                            : (token_t){ .type = TOKEN_EOF, .lc = curr.lc };
 
-         if (curr.type == Token_Ident && next.type == Token_Semicolon)
+         if (curr.type == TOKEN_IDENT && next.type == TOKEN_SEMICOLON)
             {
                const char *name = curr.value.chars;
                unsigned int h   = str_hash (name);

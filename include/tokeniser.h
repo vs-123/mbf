@@ -11,29 +11,29 @@ typedef struct
 
 #define TOKEN_TYPE_LIST                                                       \
    /* MBF */                                                                  \
-   X (Token_Ident)                                                            \
-   X (Token_Number)                                                           \
+   X (TOKEN_IDENT)                                                            \
+   X (TOKEN_NUMBER)                                                           \
                                                                               \
-   X (Token_LCurly)                                                           \
-   X (Token_RCurly)                                                           \
+   X (TOKEN_LCURLY)                                                           \
+   X (TOKEN_RCURLY)                                                           \
                                                                               \
-   X (Token_Semicolon)                                                        \
+   X (TOKEN_SEMICOLON)                                                        \
                                                                               \
-   /* Classic BF */                                                           \
-   X (Token_Plus)                                                             \
-   X (Token_Minus)                                                            \
+   /* CLASSIC BF */                                                           \
+   X (TOKEN_PLUS)                                                             \
+   X (TOKEN_MINUS)                                                            \
                                                                               \
-   X (Token_Left)                                                             \
-   X (Token_Right)                                                            \
+   X (TOKEN_LEFT)                                                             \
+   X (TOKEN_RIGHT)                                                            \
                                                                               \
-   X (Token_LLoop)                                                            \
-   X (Token_RLoop)                                                            \
+   X (TOKEN_LLOOP)                                                            \
+   X (TOKEN_RLOOP)                                                            \
                                                                               \
-   X (Token_Dot)                                                              \
-   X (Token_Comma)                                                            \
+   X (TOKEN_DOT)                                                              \
+   X (TOKEN_COMMA)                                                            \
                                                                               \
-   /* Misc. */                                                                \
-   X (Token_EOF)
+   /* MISC. */                                                                \
+   X (TOKEN_EOF)
 
 typedef enum
 {

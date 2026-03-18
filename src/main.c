@@ -1,18 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define DSTR_IMPL
 #include "dstr.h"
 
 #include "bf.h"
 #include "mbf.h"
-
-#define bool int
-
-#define true 1
-
-#define false 0
 
 typedef struct
 {
